@@ -22,8 +22,8 @@ const petSchem = new mongoose.Schema({
     required: true
   },
   ownerid: {
-    type: String,
-    unique: true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Owner'
   }
 
 },{timestamps: true})
