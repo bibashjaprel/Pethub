@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //routes
 app.use('/api/v1/user', userRoutes);
-app.use('/api/v1/pet', petRoutes);
+app.use('/api/v1/pets', petRoutes);
 
 app.listen(PORT, ()=>{
   console.log(`I am Live at ${PORT}`)
