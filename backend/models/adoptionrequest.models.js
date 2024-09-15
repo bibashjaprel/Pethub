@@ -11,7 +11,7 @@ const adoptionSchema = new mongoose.Schema({
   petid: {
     type: String,
   },
-  requestdate: datetime,
+  requestdate: date,
   status: String
 },{timestamps: true})
 
