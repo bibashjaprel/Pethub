@@ -8,9 +8,11 @@ const PORT = process.env.PORT
 const userRoutes = require('./routes/user.routes.js')
 const petRoutes = require('./routes/pet.routes.js')
 
-app.get('/login',(req, res)=>{
-  res.send("Hello I'm Login Page")
-})
+// Middleware to parse JSON bodies
+app.use(express.json());
+
+// Middleware to parse URL-encoded bodies
+app.use(express.urlencoded({ extended: true }));
 
 //routes
 app.use('/api/v1/user', userRoutes);
