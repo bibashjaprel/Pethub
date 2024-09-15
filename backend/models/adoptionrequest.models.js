@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose')
 
 const adoptionSchema = new mongoose.Schema({
   requestid: {
@@ -17,4 +17,6 @@ const adoptionSchema = new mongoose.Schema({
   status: String
 },{timestamps: true})
 
-export const Adoption = mongoose.model("Adoption", adoptionSchema);
+// export const Adoption = mongoose.model("Adoption", adoptionSchema);
+module.exports = mongoose.model("User", userSchema)
+

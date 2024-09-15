@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+const mongoose = require('mongoose')
 
 const petSchem = new mongoose.Schema({
   name: {
@@ -28,4 +28,6 @@ const petSchem = new mongoose.Schema({
 
 },{timestamps: true})
 
-export const Pet = mongoose.model("Pet", petSchem); 
+// export const Pet = mongoose.model("Pet", petSchem);
+module.exports = mongoose.model("User", userSchema)
+
