@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const petSchem = new mongoose.Schema({
+const petSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
@@ -29,5 +29,5 @@ const petSchem = new mongoose.Schema({
 },{timestamps: true})
 
 // export const Pet = mongoose.model("Pet", petSchem);
-module.exports = mongoose.model("User", userSchema)
+module.exports = mongoose.model("Pet", petSchema)
 
