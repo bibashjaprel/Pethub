@@ -6,10 +6,12 @@ const adoptionSchema = new mongoose.Schema({
     unique: true
   },
   userid: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   },
   petid: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Pet'
   },
   requestdate: date,
   status: String
