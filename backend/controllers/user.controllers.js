@@ -1,37 +1,60 @@
-const User = require('../models/user.models.js')
-const jwt = require('jsonwebtoken')
+const User = require('../models/user.models.js');
+const jwt = require('jsonwebtoken');
 
-const createToken = (_id) =>{
-    return jwt.sign({_id},process.env.SECRET,{expiresIn:'30d'})
-}
+const createToken = (_id) => {
+  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '30d' });
+};
 
-const loginUser = async (req, res)=>{
-  const {email, password} = req.body
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
 
-  try{
-    const user = await User.login(email, password)
+  try {
+    const user = await User.login(email, password);
 
-    //creating a token
-    const token = createToken(user._id)
-    res.status(200).json({email, token})
-  }catch(error){
-    res.status(400).json({error: error.message})
+    // Creating a token
+    const token = createToken(user._id);
+
+    // Send user data along with token
+    res.status(200).json({
+      email: user.email,
+      token,
+      user: {
+        id: user._id,
+        email: user.email,
+        username: user.username,
+        firstname: user.firstname,
+        lastname: user.lastname,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
-}
+};
 
+const signupUser = async (req, res) => {
+  const { username, email, password, firstname, lastname } = req.body;
 
-const signupUser = async (req, res)=>{
-  const {username, email, password, firstname, lastname} = req.body
+  try {
+    const user = await User.signup(username, email, password, firstname, lastname);
 
-  try{
-    const user = await User.signup(username, email, password, firstname, lastname)
+    // Creating a token
+    const token = createToken(user._id);
 
-    //creating a token
-    const token = createToken(user._id)
-    res.status(200).json({email, token})
-  }catch(error){
-    res.status(400).json({error: error.message})
+    // Send user data along with token
+    res.status(200).json({
+      email: user.email,
+      token,
+      user: {
+        id: user._id,
+        email: user.email,
+        username: user.username,
+        firstname: user.firstname,
+        lastname: user.lastname,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
-}
+};
 
-module.exports = {loginUser, signupUser}
+module.exports = { loginUser, signupUser };
