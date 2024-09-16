@@ -1,12 +1,14 @@
-const express = require('express')
-const app = express()
-const connectDB = require('./dbconfig/dbconfig.js')
-connectDB()
-require('dotenv').config()
-const PORT = process.env.PORT
+const express = require('express');
+const cors = require('cors');
+const app = express();
+const connectDB = require('./dbconfig/dbconfig.js');
+require('dotenv').config();
+const PORT = process.env.PORT;
 
-const userRoutes = require('./routes/user.routes.js')
-const petRoutes = require('./routes/pet.routes.js')
+const userRoutes = require('./routes/user.routes.js');
+const petRoutes = require('./routes/pet.routes.js');
+
+connectDB();
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -14,10 +16,17 @@ app.use(express.json());
 // Middleware to parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
 
-//routes
+// CORS configuration
+app.use(cors({
+  origin: 'http://localhost:3000', 
+  methods: 'GET,POST,PUT,PATCH,DELETE,OPTIONS',
+  allowedHeaders: 'Content-Type,Authorization',
+}));
+
+// Routes
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/pets', petRoutes);
 
-app.listen(PORT, ()=>{
-  console.log(`I am Live at ${PORT}`)
-})
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
