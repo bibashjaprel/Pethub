@@ -1,8 +1,8 @@
 const User = require('../models/user.models.js');
 const jwt = require('jsonwebtoken');
 
-const createToken = (_id) => {
-  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '30d' });
+const createToken = (user) => {
+  return jwt.sign({ _id: user._id, role:user.role }, process.env.SECRET, { expiresIn: '30d' });
 };
 
 const loginUser = async (req, res) => {
@@ -12,7 +12,7 @@ const loginUser = async (req, res) => {
     const user = await User.login(email, password);
 
     // Creating a token
-    const token = createToken(user._id);
+    const token = createToken(user);
 
     // Send user data along with token
     res.status(200).json({
@@ -24,6 +24,7 @@ const loginUser = async (req, res) => {
         username: user.username,
         firstname: user.firstname,
         lastname: user.lastname,
+        role: user.role,
       },
     });
   } catch (error) {
@@ -38,7 +39,7 @@ const signupUser = async (req, res) => {
     const user = await User.signup(username, email, password, firstname, lastname);
 
     // Creating a token
-    const token = createToken(user._id);
+    const token = createToken(user);
 
     // Send user data along with token
     res.status(200).json({
@@ -50,6 +51,7 @@ const signupUser = async (req, res) => {
         username: user.username,
         firstname: user.firstname,
         lastname: user.lastname,
+        role: user.role,
       },
     });
   } catch (error) {
