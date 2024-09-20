@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { setTokenWithExpiry } from '../utils/authHelpers';
 
 const Login = () => {
@@ -18,9 +18,9 @@ const Login = () => {
     try {
       const response = await axios.post('http://localhost:5000/api/v1/user/login', formData);
       setTokenWithExpiry(response.data.token, 30, response.data.user);
-      navigate('/dashboard', { replace: true }); // Use replace to avoid adding to history stack
+      navigate('/dashboard', { replace: true });
     } catch (error) {
-      setError(error.response?.data?.error || 'Something went wrong, please try again.');
+      setError(error.response?.data?.error || 'Invalid login credentials. Please try again.');
     }
   };
 
@@ -70,7 +70,7 @@ const Login = () => {
           </button>
           <p className="mt-4 text-center">
             Don't have an account?{' '}
-            <a href="/signup" className="text-blue-500 hover:underline">Sign Up</a>
+            <Link to="/signup" className="text-blue-500 hover:underline">Sign Up</Link>
           </p>
         </form>
       </div>
