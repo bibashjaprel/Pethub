@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
 import { setTokenWithExpiry } from '../utils/authHelpers';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
     firstname: '',
     lastname: '',
+    email: '',
+    username: '',
+    password: ''
   });
+  const defaultRole = 'user'
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,10 +23,10 @@ const Signup = () => {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post('http://localhost:5000/api/v1/user/signup', formData);
-      setTokenWithExpiry(response.data.token, 30);
-      console.log('Signup successful:', response.data);
-      window.location.href = '/login';
+      const response = await axios.post('http://localhost:5000/api/v1/user/signup', {...formData, role:defaultRole});
+      setTokenWithExpiry(response.data.token, 30 );
+      setTokenWithExpiry(response.data.token, 30, response.data.user, defaultRole);
+      navigate('/login');
     } catch (error) {
       setError(error.response?.data?.error || 'Something went wrong, please try again.');
     }
@@ -35,12 +38,12 @@ const Signup = () => {
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Sign Up</h2>
         {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-6">
-          {[ 
+          {[
+            { label: 'First Name', name: 'firstname', type: 'text' },
+            { label: 'Last Name', name: 'lastname', type: 'text' },
             { label: 'Username', name: 'username', type: 'text' },
             { label: 'Email', name: 'email', type: 'email' },
-            { label: 'Password', name: 'password', type: 'password' },
-            { label: 'First Name', name: 'firstname', type: 'text' },
-            { label: 'Last Name', name: 'lastname', type: 'text' }
+            { label: 'Password', name: 'password', type: 'password' }
           ].map(({ label, name, type }) => (
             <div key={name} className="mb-4">
               <label htmlFor={name} className="block text-gray-700 text-sm font-medium">
@@ -67,7 +70,7 @@ const Signup = () => {
           </button>
           <p className="mt-4 text-center text-gray-600">
             Already have an account?{' '}
-            <a href="/login" className="text-blue-500 hover:underline">Login</a>
+            <Link to="/login" className="text-blue-500 hover:underline">Login</Link>
           </p>
         </form>
       </div>
