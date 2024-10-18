@@ -1,12 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const connectDB = require('./dbconfig/dbconfig.js');
+const connectDB = require('./config/dbconfig.js');
 require('dotenv').config();
 const PORT = process.env.PORT;
 
 const userRoutes = require('./routes/user.routes.js');
 const petRoutes = require('./routes/pet.routes.js');
+
 
 connectDB();
 
@@ -16,14 +17,13 @@ app.use(express.json());
 // Middleware to parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
 
-// CORS configuration
+
 app.use(cors({
   origin: 'http://localhost:3000', 
   methods: 'GET,POST,PUT,PATCH,DELETE,OPTIONS',
   allowedHeaders: 'Content-Type,Authorization',
 }));
 
-// Routes
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/pets', petRoutes);
 
