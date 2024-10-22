@@ -5,15 +5,19 @@ import Dashboard from './pages/Dashborad';
 import AllPets from './pages/AllPets'; 
 import Login from './pages/Login'; 
 import Signup from './pages/Signup';
+import Home from './pages/Home';
+import DonatePet from './pages/DonatePet';
 import UserManagement from './components/UserManagement';
 const App = () => {
   return (
     <Router>
       <Navbar /> {/* Navbar will be visible on all routes */}
       <Routes>
-         <Route path="/" element={<Dashboard />} />
+         <Route path="/dashboard" element={<Dashboard />} />
+         <Route path="/" element={<Home />} />
          <Route path="/manage-users" element={<UserManagement />} />
         <Route path="/all-pets" element={<AllPets />} />
+        <Route path="/donatepet" element={<DonatePet />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>
