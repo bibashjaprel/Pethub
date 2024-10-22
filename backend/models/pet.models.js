@@ -21,12 +21,8 @@ const petSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  imageurl: {
+  image: {
     type: String
-  },
-  ownerid: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Owner'
   }
 
 },{timestamps: true})
