@@ -77,7 +77,7 @@ const DonatePet = () => {
           component="img"
           src={donateImage}
           alt="Thank you for donating"
-          sx={{ width: '60%', borderRadius: '10px', objectFit: 'cover', '&:hover': { transform: 'translateY(-10px)' } }}
+          sx={{ width: '60%', borderRadius: '10px', objectFit: 'cover', transition: 'transform 0.3s ease','&:hover': { transform: 'translateY(-10px)' } }}
         />
         <Typography variant="h4" sx={{ mt: 2 }}>Thank You for Donating</Typography>
         <Typography variant="body1" sx={{ mt: 1 }}>Your donation helps animals in need find their forever homes.</Typography>
