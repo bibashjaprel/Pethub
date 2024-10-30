@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getUsers, deleteUser } from '../utils/apiHelpers';
+import { getUsers, deleteUser as deleteUserApi } from '../utils/apiHelpers';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -20,6 +20,15 @@ const UserManagement = () => {
 
     fetchUsers();
   }, []);
+
+  const handleDeleteUser = async (userId) => {
+    try {
+      await deleteUserApi(userId); // Call the API to delete the user
+      setUsers((prevUsers) => prevUsers.filter(user => user.id !== userId)); // Update state
+    } catch (err) {
+      setError('Failed to delete user');
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -61,7 +70,12 @@ const UserManagement = () => {
                   <button className="bg-blue-500 text-white px-3 py-1 rounded mb-2 sm:mb-0">View</button>
                   <button className="bg-yellow-500 text-white px-3 py-1 rounded mb-2 sm:mb-0">Change Role</button>
                   <button className="bg-orange-500 text-white px-3 py-1 rounded mb-2 sm:mb-0">Suspend</button>
-                  <button className="bg-red-500 text-white px-3 py-1 rounded" onClick={deleteUser}>Delete</button>
+                  <button 
+                    className="bg-red-500 text-white px-3 py-1 rounded" 
+                    onClick={() => handleDeleteUser(user.id)} // Pass user ID
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
