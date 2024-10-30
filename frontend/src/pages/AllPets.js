@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Box, Paper, Typography, CircularProgress, Button, styled } from '@mui/material';
+import {
+  Box,
+  Paper,
+  Typography,
+  CircularProgress,
+  Button,
+  styled,
+  TextField,
+  AppBar,
+  Toolbar,
+} from '@mui/material';
 import Masonry from '@mui/lab/Masonry';
 import { useParams, Link } from 'react-router-dom';
 
@@ -14,10 +24,24 @@ const Label = styled(Paper)(({ theme }) => ({
   borderBottomRightRadius: 0,
 }));
 
+const PetCard = styled(Paper)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  borderRadius: 8,
+  overflow: 'hidden',
+  transition: 'transform 0.2s, box-shadow 0.2s',
+  '&:hover': {
+    transform: 'scale(1.05)',
+    boxShadow: theme.shadows[5],
+  },
+}));
+
 const HomePage = () => {
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const { type } = useParams();
 
   useEffect(() => {
@@ -34,6 +58,10 @@ const HomePage = () => {
 
     fetchPets();
   }, [type]);
+
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+  };
 
   if (loading) {
     return (
@@ -54,24 +82,43 @@ const HomePage = () => {
     );
   }
 
+  const filteredPets = pets.filter((pet) =>
+    pet.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4">
-      <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 6, textAlign: 'center' }}>
-        {type ? `${type}s` : 'Pets'} available for adoption near you
-      </Typography>
+      <AppBar position="static" sx={{ mb: 4 }}>
+        <Toolbar>
+          <Typography variant="h4" sx={{ flexGrow: 1, textAlign: 'start' }}>
+            {type ? `${type}s` : 'Pets'} available
+          </Typography>
+          <TextField
+            variant="outlined"
+            placeholder="Search pets by name"
+            value={searchQuery}
+            onChange={handleSearch}
+            sx={{
+              ml: 2,
+              width: 250,
+              backgroundColor: 'white',
+              borderRadius: 1,
+            }}
+          />
+        </Toolbar>
+      </AppBar>
       <Box sx={{ width: '100%', minHeight: 800 }}>
-        {pets.length ? (
+        {filteredPets.length ? (
           <Masonry columns={4} spacing={2}>
-            {pets.map((pet) => (
-              <div key={pet._id} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            {filteredPets.map((pet) => (
+              <PetCard key={pet._id} sx={{ p: 2 }}>
                 <Link to={`/${pet.species.toLowerCase()}/${pet._id}`} style={{ textDecoration: 'none' }}>
                   <img
-                    src={pet.image || 'https://plus.unsplash.com/premium_photo-1675437553489-0ddf979f299a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'} // Use pet.image if available
+                    src={pet.image || 'https://plus.unsplash.com/premium_photo-1675437553489-0ddf979f299a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'}
                     alt={pet.name}
                     loading="lazy"
                     style={{
-                      borderBottomLeftRadius: 4,
-                      borderBottomRightRadius: 4,
+                      borderRadius: 8,
                       display: 'block',
                       width: '100%',
                       height: 'auto',
@@ -89,7 +136,7 @@ const HomePage = () => {
                 <Button variant="contained" color="primary" fullWidth>
                   Adopt {pet.name}
                 </Button>
-              </div>
+              </PetCard>
             ))}
           </Masonry>
         ) : (
