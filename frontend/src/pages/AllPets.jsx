@@ -133,9 +133,11 @@ const HomePage = () => {
                   <strong>Age:</strong> {pet.age}<br />
                   <strong>Description:</strong> {pet.description}
                 </Typography>
-                <Button variant="contained" color="primary" fullWidth>
-                  Adopt {pet.name}
-                </Button>
+                <Link to={`/${pet.species.toLowerCase()}/${pet._id}`} style={{ textDecoration: 'none' }}>
+                  <Button variant="contained" color="primary" fullWidth>
+                    Adopt {pet.name}
+                  </Button>
+                </Link>
               </PetCard>
             ))}
           </Masonry>
