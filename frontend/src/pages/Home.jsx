@@ -26,14 +26,25 @@ const Home = () => {
       <Container maxWidth="lg">
         
         {/* Hero Section */}
-        <Box sx={{ textAlign: 'center', py: 6, backgroundColor: '#ffebee', borderRadius: 2, mb: 6 }}>
+        <Box 
+          sx={{
+            textAlign: 'center',
+            py: 6,
+            backgroundImage: 'url(https://cdn.pixabay.com/photo/2023/10/01/12/56/shih-tzu-8287355_960_720.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            borderRadius: 2,
+            mb: 6,
+            color: 'white', // Change text color for readability
+          }}
+        >
           <Avatar sx={{ bgcolor: 'primary.main', mx: 'auto', width: 80, height: 80 }}>
             <PetsIcon fontSize="large" />
           </Avatar>
           <Typography variant="h2" component="h1" sx={{ fontWeight: 'bold', mt: 2, mb: 1 }}>
             PetHub
           </Typography>
-          <Typography variant="h6" color="textSecondary">
+          <Typography variant="h6">
             Find your perfect pet companion today!
           </Typography>
           <Button 
@@ -41,7 +52,7 @@ const Home = () => {
             color="primary" 
             size="large" 
             component={Link} 
-            to="/adopt"
+            to="/all-pets"
             sx={{ mt: 4 }}
           >
             Adopt a Pet
