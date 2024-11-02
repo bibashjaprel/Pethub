@@ -43,18 +43,13 @@ export default function Dashboard() {
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
           <List>
-            <ListItem button onClick={() => handleComponentChange(<ManageUsers />, "ManageUsers")} 
-                      sx={{ color: activeItem === "ManageUsers" ? 'blue' : 'inherit' }}>
-              <ListItemIcon><People /></ListItemIcon>
-              <ListItemText primary="Manage Users" />
-            </ListItem>
             <ListItem button onClick={() => handleComponentChange(<ViewAdoptionRequests />, "ViewAdoptionRequests")} 
                       sx={{ color: activeItem === "ViewAdoptionRequests" ? 'blue' : 'inherit' }}>
               <ListItemIcon><Assignment /></ListItemIcon>
               <ListItemText primary="View Adoption Requests" />
             </ListItem>
             <ListItem button onClick={() => handleComponentChange(<ViewDonateRequests />, "ViewDonateRequests")} 
-                      sx={{ color: activeItem === "ViewPetAdoptionRequests" ? 'blue' : 'inherit' }}>
+                      sx={{ color: activeItem === "ViewDonateRequests" ? 'blue' : 'inherit' }}>
               <ListItemIcon><Assignment /></ListItemIcon>
               <ListItemText primary="View  Donate Requests" />
             </ListItem>
@@ -62,6 +57,11 @@ export default function Dashboard() {
                       sx={{ color: activeItem === "ManagePets" ? 'blue' : 'inherit' }}>
               <ListItemIcon><Pets /></ListItemIcon>
               <ListItemText primary="Manage Pets" />
+            </ListItem>
+            <ListItem button onClick={() => handleComponentChange(<ManageUsers />, "ManageUsers")} 
+                      sx={{ color: activeItem === "ManageUsers" ? 'blue' : 'inherit' }}>
+              <ListItemIcon><People /></ListItemIcon>
+              <ListItemText primary="Manage Users" />
             </ListItem>
           </List>
         </Box>
