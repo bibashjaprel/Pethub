@@ -28,12 +28,12 @@ const AboutUs = () => {
   return (
     <Box className="min-h-screen bg-gray-100">
       {/* Hero Section */}
-      <Section sx={{ textAlign: 'center', py: 6, backgroundColor: '#ffebee' }}>
+      <Section sx={{ textAlign: 'center', py: 6, backgroundColor: 'primary.main' }}>
         <Container maxWidth="md">
-          <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 2 }}>
+          <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 2, color:"white"}}>
             About PetHub
           </Typography>
-          <Typography variant="h6" color="textSecondary" sx={{ mb: 4 }}>
+          <Typography variant="h6" color="white" sx={{ mb: 4 }}>
             Connecting pets with loving homes and families.
           </Typography>
           <Pets fontSize="large" color="primary" />
