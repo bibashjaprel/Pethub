@@ -8,6 +8,8 @@ import Signup from './pages/Signup';
 import Home from './pages/Home';
 import DonatePet from './pages/DonatePet';
 import UserManagement from './components/UserManagement';
+
+import Footer from './components/Footer';
 const App = () => {
   return (
     <Router>
@@ -21,6 +23,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>
+      <Footer />
     </Router>
   );
 }

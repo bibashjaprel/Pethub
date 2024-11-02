@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { isAuthenticated, getUser, clearToken } from '../utils/authHelpers';
-
+const user = getUser();
 const Navbar = () => {
   const navigate = useNavigate();
   const isLoggedIn = isAuthenticated();
-  const user = getUser();
+  const role = user?.role;
 
   const handleLogout = () => {
     clearToken();
@@ -24,7 +24,9 @@ const Navbar = () => {
           <li className="text-gray-700 hover:text-blue-500"><Link to="/all-pets">Adopt</Link></li>
           <li className="text-gray-700 hover:text-blue-500"><Link to="/donatepet">Donate</Link></li>
           <li className="text-gray-700 hover:text-blue-500"><Link to="/contact">Contact Us</Link></li>
+          {role==='admin' &&
           <li className="text-gray-700 hover:text-blue-500"><Link to="/dashboard">Dashboard</Link></li>
+          }
         </ul>
 
         {/* Right Section */}
