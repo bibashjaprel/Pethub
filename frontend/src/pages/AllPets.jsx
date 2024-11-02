@@ -8,9 +8,11 @@ import {
   Button,
   styled,
   TextField,
+  IconButton,
   AppBar,
   Toolbar,
 } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import Masonry from '@mui/lab/Masonry';
 import { useParams, Link } from 'react-router-dom';
 
@@ -59,8 +61,8 @@ const HomePage = () => {
     fetchPets();
   }, [type]);
 
-  const handleSearch = (event) => {
-    setSearchQuery(event.target.value);
+  const handleSearch = () => {
+
   };
 
   if (loading) {
@@ -93,23 +95,39 @@ const HomePage = () => {
           <Typography variant="h4" sx={{ flexGrow: 1, textAlign: 'start' }}>
             {type ? `${type}s` : 'Pets'} available
           </Typography>
-          <TextField
-            variant="outlined"
-            placeholder="Search pets by name"
-            value={searchQuery}
-            onChange={handleSearch}
-            sx={{
-              ml: 2,
-              width: 250,
-              backgroundColor: 'white',
-              borderRadius: 1,
-            }}
-          />
+          <Box sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#f0f0f0', borderRadius: 1 }}>
+            <TextField
+              variant="outlined"
+              placeholder="Search by name"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              sx={{
+                width: 200,
+                '& .MuiOutlinedInput-root': {
+                  height: 36,
+                  paddingRight: 0,
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  border: 'none',
+                },
+              }}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={handleSearch}>
+                    <SearchIcon />
+                  </IconButton>
+                ),
+              }}
+            />
+          </Box>
         </Toolbar>
       </AppBar>
       <Box sx={{ width: '100%', minHeight: 800 }}>
         {filteredPets.length ? (
-          <Masonry columns={4} spacing={2}>
+          <Masonry
+            columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}
+            spacing={2}
+          >
             {filteredPets.map((pet) => (
               <PetCard key={pet._id} sx={{ p: 2 }}>
                 <Link to={`/${pet.species.toLowerCase()}/${pet._id}`} style={{ textDecoration: 'none' }}>
@@ -134,7 +152,7 @@ const HomePage = () => {
                   <strong>Description:</strong> {pet.description}
                 </Typography>
                 <Link to={`/${pet.species.toLowerCase()}/${pet._id}`} style={{ textDecoration: 'none' }}>
-                  <Button variant="contained" color="primary" fullWidth>
+                  <Button variant="contained" color="primary" fullWidth sx={{ mt: 1 }}>
                     Adopt {pet.name}
                   </Button>
                 </Link>
