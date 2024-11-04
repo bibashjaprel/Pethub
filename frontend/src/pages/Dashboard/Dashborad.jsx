@@ -1,8 +1,7 @@
-// Dashboard.js (Updated)
 import React from 'react';
 import { Box, CssBaseline, Drawer, List, ListItem, ListItemIcon, ListItemText, Toolbar, AppBar, Typography } from '@mui/material';
 import { People, Pets, Assignment, Dashboard as DashboardIcon } from '@mui/icons-material';
-
+import { Link } from 'react-router-dom';
 // Components for the different dashboard sections
 import ManageUsers from './ManageUsers';
 import ViewAdoptionRequests from './ViewAdoptionRequests';
@@ -27,7 +26,7 @@ export default function Dashboard() {
       <AppBar position="fixed" sx={{ zIndex: theme => theme.zIndex.drawer + 1 }}>
         <Toolbar>
           <Typography variant="h6" noWrap component="div">
-            PetHub Admin Dashboard
+            <Link to='/'>PetHub Admin Dashboard</Link>
           </Typography>
         </Toolbar>
       </AppBar>
