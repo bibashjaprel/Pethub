@@ -11,21 +11,48 @@ import {
   ListItem,
   ListItemText,
   Box,
-  Divider
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { isAuthenticated, getUser, clearToken } from '../utils/authHelpers';
-
-const user = getUser();
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isLoggedIn = isAuthenticated();
+  const user = getUser();
   const role = user?.role;
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeLink, setActiveLink] = useState(location.pathname);
+  const [menuItems, setMenuItems] = useState([
+    { text: 'Home', path: '/' },
+    { text: 'Adopt', path: '/all-pets' },
+    { text: 'Donate', path: '/donatepet' },
+    { text: 'Contact Us', path: '/contact' },
+  ]);
+
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const newMenuItems = [
+        { text: 'Home', path: '/' },
+        { text: 'Adopt', path: '/all-pets' },
+        { text: 'Donate', path: '/donatepet' },
+        { text: 'Contact Us', path: '/contact' },
+      ];
+      if (role === 'admin') {
+        newMenuItems.push({ text: 'Dashboard', path: '/admin/v1/dashboard' });
+      }
+      setMenuItems(newMenuItems);
+    } else {
+      setMenuItems([
+        { text: 'Home', path: '/' },
+        { text: 'Adopt', path: '/all-pets' },
+        { text: 'Donate', path: '/donatepet' },
+        { text: 'Contact Us', path: '/contact' },
+      ]);
+    }
+  }, [isLoggedIn, role]);
 
   const toggleDrawer = (open) => () => {
     setDrawerOpen(open);
@@ -33,19 +60,8 @@ const Navbar = () => {
 
   const handleLogout = () => {
     clearToken();
-    navigate('/login');
+    navigate('/');
   };
-
-  const menuItems = [
-    { text: 'Home', path: '/' },
-    { text: 'Adopt', path: '/all-pets' },
-    { text: 'Donate', path: '/donatepet' },
-    { text: 'Contact Us', path: '/contact' },
-  ];
-
-  if (role === 'admin') {
-    menuItems.push({ text: 'Dashboard', path: '/dashboard' });
-  }
 
   useEffect(() => {
     setActiveLink(location.pathname);
@@ -98,9 +114,13 @@ const Navbar = () => {
             </Button>
           ) : (
             <>
-              <Typography variant="body1" sx={{ mx: 1 }}>
-                Welcome, <strong>{user?.firstname || 'User'}</strong>
+            <Typography variant="body1" sx={{ mx: 1 }}>
+              Welcome,{' '}
+              <Typography component="span" sx={{ color: 'blue' }}>
+              {user?.firstname || 'User'} {user?.lastname}
               </Typography>
+            </Typography>
+
               <Button
                 variant="outlined"
                 color="secondary"
@@ -131,9 +151,11 @@ const Navbar = () => {
               <ListItemText primary={item.text} />
             </ListItem>
           ))}
-          <ListItem button onClick={handleLogout}>
-            <ListItemText primary="Logout" />
-          </ListItem>
+          {isLoggedIn && (
+            <ListItem button onClick={handleLogout}>
+              <ListItemText primary="Logout" />
+            </ListItem>
+          )}
         </List>
       </Drawer>
     </AppBar>
