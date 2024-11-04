@@ -11,7 +11,7 @@ const Home = () => {
   useEffect(() => {
     const fetchRecentPets = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/v1/pets/recent');
+        const response = await fetch('/api/v1/pets/');
         const data = await response.json();
         setRecentPets(data);
       } catch (error) {
