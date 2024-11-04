@@ -1,61 +1,142 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Button,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Box,
+  Divider
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 import { isAuthenticated, getUser, clearToken } from '../utils/authHelpers';
+
 const user = getUser();
+
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const isLoggedIn = isAuthenticated();
   const role = user?.role;
+
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [activeLink, setActiveLink] = useState(location.pathname);
+
+  const toggleDrawer = (open) => () => {
+    setDrawerOpen(open);
+  };
 
   const handleLogout = () => {
     clearToken();
     navigate('/login');
   };
 
+  const menuItems = [
+    { text: 'Home', path: '/' },
+    { text: 'Adopt', path: '/all-pets' },
+    { text: 'Donate', path: '/donatepet' },
+    { text: 'Contact Us', path: '/contact' },
+  ];
+
+  if (role === 'admin') {
+    menuItems.push({ text: 'Dashboard', path: '/dashboard' });
+  }
+
+  useEffect(() => {
+    setActiveLink(location.pathname);
+  }, [location]);
+
   return (
-    <nav className="bg-white shadow-md p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        {/* Title */}
-        <h1 className="text-xl font-bold text-gray-800">Pet Adoption</h1>
+    <AppBar position="static" color="default">
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
+        <Typography variant="h6" sx={{ flex: 1, fontFamily: 'cursive', color: 'blue' }}>
+          PetHub
+        </Typography>
 
-        {/* Centered Menu */}
-        <ul className="flex space-x-8 justify-center items-center">
-          <li className="text-gray-700 hover:text-blue-500"><Link to="/">Home</Link></li>
-          <li className="text-gray-700 hover:text-blue-500"><Link to="/all-pets">Adopt</Link></li>
-          <li className="text-gray-700 hover:text-blue-500"><Link to="/donatepet">Donate</Link></li>
-          <li className="text-gray-700 hover:text-blue-500"><Link to="/contact">Contact Us</Link></li>
-          {role==='admin' &&
-          <li className="text-gray-700 hover:text-blue-500"><Link to="/dashboard">Dashboard</Link></li>
-          }
-        </ul>
+        <Box sx={{ display: { xs: 'none', md: 'flex' }, flexGrow: 1, justifyContent: 'center' }}>
+          {menuItems.map((item) => (
+            <Button
+              key={item.text}
+              component={Link}
+              to={item.path}
+              sx={{
+                mx: 1,
+                color: 'text.primary',
+                position: 'relative',
+                '&:after': {
+                  content: activeLink === item.path ? '""' : 'none',
+                  position: 'absolute',
+                  bottom: -5,
+                  left: 0,
+                  width: '100%',
+                  height: '2px',
+                  backgroundColor: 'blue',
+                },
+              }}
+              onClick={() => setActiveLink(item.path)}
+            >
+              {item.text}
+            </Button>
+          ))}
+        </Box>
 
-        {/* Right Section */}
-        <ul className="flex space-x-4">
+        <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
           {!isLoggedIn ? (
-            <>
-              <li><Link to="/login" className="hover:text-blue-500">Login</Link></li>
-              {/* <li><Link to="/signup" className="hover:text-blue-500">Sign Up</Link></li> */}
-            </>
+            <Button
+              component={Link}
+              to="/login"
+              variant="contained"
+              color="primary"
+              sx={{ marginLeft: 2 }}
+            >
+              Login
+            </Button>
           ) : (
             <>
-              <li className="text-gray-700">
-                Welcome, <span className="text-blue-700 font-bold">
-                  {user?.firstname ? user.firstname : 'User'}
-                </span>
-              </li>
-              <li>
-                <button
-                  onClick={handleLogout}
-                  className="hover:text-red-500 cursor-pointer"
-                >
-                  Logout
-                </button>
-              </li>
+              <Typography variant="body1" sx={{ mx: 1 }}>
+                Welcome, <strong>{user?.firstname || 'User'}</strong>
+              </Typography>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={handleLogout}
+                sx={{ marginLeft: 2 }}
+              >
+                Logout
+              </Button>
             </>
           )}
-        </ul>
-      </div>
-    </nav>
+        </Box>
+
+        <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          onClick={toggleDrawer(true)}
+          sx={{ display: { xs: 'block', md: 'none' } }}
+        >
+          <MenuIcon />
+        </IconButton>
+      </Toolbar>
+
+      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+        <List>
+          {menuItems.map((item) => (
+            <ListItem button key={item.text} component={Link} to={item.path} onClick={toggleDrawer(false)}>
+              <ListItemText primary={item.text} />
+            </ListItem>
+          ))}
+          <ListItem button onClick={handleLogout}>
+            <ListItemText primary="Logout" />
+          </ListItem>
+        </List>
+      </Drawer>
+    </AppBar>
   );
 };
 
