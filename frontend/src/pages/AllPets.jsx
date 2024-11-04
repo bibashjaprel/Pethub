@@ -16,16 +16,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import Masonry from '@mui/lab/Masonry';
 import { useParams, Link } from 'react-router-dom';
 
-const Label = styled(Paper)(({ theme }) => ({
-  backgroundColor: '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-  borderBottomLeftRadius: 0,
-  borderBottomRightRadius: 0,
-}));
-
 const PetCard = styled(Paper)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
