@@ -83,7 +83,7 @@ const HomePage = () => {
       <AppBar position="static" sx={{ mb: 4 }}>
         <Toolbar>
           <Typography variant="h4" sx={{ flexGrow: 1, textAlign: 'start' }}>
-            {type ? `${type}s` : 'Pets'} available
+          <Typography variant="h6">Available pets</Typography>
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#f0f0f0', borderRadius: 1 }}>
             <TextField
