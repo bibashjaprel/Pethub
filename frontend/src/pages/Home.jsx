@@ -3,11 +3,11 @@ import { Box, Typography, Button, Grid, Container, Paper, Card, CardMedia, CardC
 import { Link } from 'react-router-dom';
 import Carousel from 'react-material-ui-carousel';
 import PetsIcon from '@mui/icons-material/Pets';
+import bannerImage from '../assets/banner2.jpg';
 
 const Home = () => {
   const [recentPets, setRecentPets] = useState([]);
 
-  // Fetch recent pets
   useEffect(() => {
     const fetchRecentPets = async () => {
       try {
@@ -24,18 +24,16 @@ const Home = () => {
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
       <Container maxWidth="lg">
-        
-        {/* Hero Section */}
         <Box 
           sx={{
             textAlign: 'center',
             py: 6,
-            backgroundImage: 'url(https://cdn.pixabay.com/photo/2023/10/01/12/56/shih-tzu-8287355_960_720.jpg)',
+            backgroundImage: `url(${bannerImage})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             borderRadius: 2,
             mb: 6,
-            color: 'white', // Change text color for readability
+            color: 'white',
           }}
         >
           <Avatar sx={{ bgcolor: 'primary.main', mx: 'auto', width: 80, height: 80 }}>
@@ -59,7 +57,6 @@ const Home = () => {
           </Button>
         </Box>
 
-        {/* Recent Pets Carousel */}
         <Box sx={{ mb: 6 }}>
           <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 3, textAlign: 'center' }}>
             Recently Added Pets
@@ -101,9 +98,7 @@ const Home = () => {
           )}
         </Box>
 
-        {/* Features Section */}
         <Grid container spacing={4}>
-          {/* Adopt Feature */}
           <Grid item xs={12} sm={4}>
             <Paper sx={{ textAlign: 'center', p: 4, borderRadius: 2, boxShadow: 2 }}>
               <Typography variant="h5" gutterBottom>
@@ -123,7 +118,6 @@ const Home = () => {
             </Paper>
           </Grid>
 
-          {/* Donate Feature */}
           <Grid item xs={12} sm={4}>
             <Paper sx={{ textAlign: 'center', p: 4, borderRadius: 2, boxShadow: 2 }}>
               <Typography variant="h5" gutterBottom>
@@ -143,7 +137,6 @@ const Home = () => {
             </Paper>
           </Grid>
 
-          {/* Contact Us Feature */}
           <Grid item xs={12} sm={4}>
             <Paper sx={{ textAlign: 'center', p: 4, borderRadius: 2, boxShadow: 2 }}>
               <Typography variant="h5" gutterBottom>
