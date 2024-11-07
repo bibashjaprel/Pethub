@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
-const upload = require('../middlewares/multer.js')
-
+// const upload = require('../middlewares/multer.js')
+const authMiddleware = require('../middlewares/authMiddleware.js');
 const {
   getPets,
   getPet,
@@ -10,9 +10,9 @@ const {
   updatePet
 } = require('../controllers/pet.controllers.js')
 
-router.get('/', getPets)
+router.get('/' , authMiddleware, getPets)
 router.get('/:id', getPet)
-router.post('/', upload.single('image'), createPet)
+// router.post('/', upload.single('image'), createPet)
 router.delete('/:id', deletePet)
 router.patch('/:id', updatePet)
 

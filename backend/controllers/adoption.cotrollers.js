@@ -54,7 +54,8 @@ const createAdoptionRequest = async (req, res) => {
     });
     res.status(201).json(newAdoptionRequest);
   } catch (error) {
-    res.status(400).json({ error: 'Failed to create adoption request' });
+    console.error('Error creating adoption request:', error);
+    res.status(400).json({ error: 'Failed to create adoption request'})
   }
 };
 

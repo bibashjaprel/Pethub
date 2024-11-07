@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
 const adoptionRequestSchema = new mongoose.Schema({
-  applicationId: { 
-    type: String, 
-    required: true, 
-    unique: true 
-  },
   user: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User', 
@@ -16,16 +11,12 @@ const adoptionRequestSchema = new mongoose.Schema({
     ref: 'Pet', 
     required: true 
   },
-  applicationDate: { 
-    type: Date, 
-    default: Date.now 
-  },
   status: { 
     type: String, 
     enum: ['Pending', 'Approved', 'Rejected'], 
     default: 'Pending' 
   },
-  comments: { 
+  message: { 
     type: String 
   }
 }, { timestamps: true });

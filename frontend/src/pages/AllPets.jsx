@@ -39,10 +39,31 @@ const Allpets = () => {
   useEffect(() => {
     const fetchPets = async () => {
       try {
-        const response = await axios.get(`/api/v1/pets?type=${type || ''}`);
-        setPets(response.data);
+        const token = localStorage.getItem('authToken');
+        const response = await axios.get(`/api/v1/pets?type=${type || ''}`, {
+          headers: {
+             Authorization: `Bearer ${token}`,
+          },
+        });
+
+        // check if the response is successful
+        if (response.status === 200) {
+          setPets(response.data);
+        } else {
+          setError(`Error fetching pets: ${response.statusText}`);
+        }
       } catch (err) {
-        setError('Error fetching pets');
+        // handle network or server errors
+        if (err.response) {
+          // The server responded with a status other than 2xx
+          setError(`Server Error: ${err.response.status} - ${err.response.data.message || 'Something went wrong'}`);
+        } else if (err.request) {
+          // The request was made but no response was received
+          setError('Network Error: No response received from the server');
+        } else {
+          // Something happened in setting up the request
+          setError(`Error: ${err.message}`);
+        }
       } finally {
         setLoading(false);
       }
@@ -50,7 +71,6 @@ const Allpets = () => {
 
     fetchPets();
   }, [type]);
-
 
   const filteredPets = pets.filter((pet) =>
     pet.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -153,6 +173,8 @@ const Allpets = () => {
                       <strong>Age:</strong> {pet.age}
                       <br />
                       <strong>Description:</strong> {pet.description}
+                      <br />
+                      <strong>Donor:</strong> {pet.donor ? pet.donor.name : 'Unknown'}
                     </Typography>
                     <Link to={`/${pet.species.toLowerCase()}/${pet._id}`} style={{ textDecoration: 'none' }}>
                       <Button variant="contained" color="primary" fullWidth sx={{ mt: 1 }}>

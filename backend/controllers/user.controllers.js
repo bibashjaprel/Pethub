@@ -1,8 +1,9 @@
-const User = require('../models/user.models.js');
+const User = require('../models/user.models');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+
 const createToken = (user) => {
-  return jwt.sign({ _id: user._id, role:user.role }, process.env.SECRET, { expiresIn: '30d' });
+  return jwt.sign({ _id: user._id, role: user.role }, process.env.SECRET, { expiresIn: '30d' });
 };
 
 const loginUser = async (req, res) => {
@@ -51,14 +52,15 @@ const signupUser = async (req, res) => {
   }
 };
 
+const getUsers = async (req, res) => {
+  try {
+    const users = await User.find({}).sort({ createdAt: -1 });
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+};
 
-// user controllers
-const getUsers = async (req ,res) =>{
-  const users = await User.find({}).sort({createdAt: -1})
-  res.status(200).json(users)
-}
-
-// get single user
 const getUser = async (req, res) => {
   const { id } = req.params;
 
@@ -71,33 +73,28 @@ const getUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'No such User' });
     }
-
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch user' });
   }
 };
 
-//deleteuser
 const deleteUser = async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: 'No such User' });
   }
+
   try {
     const user = await User.findByIdAndDelete(id);
     if (!user) {
       return res.status(404).json({ error: 'No such User' });
     }
-    console.log('user deleted sucessfully')
-
-    res.status(200).json(user);
+    res.status(200).json({ message: 'User deleted successfully', user });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch user' });
+    res.status(500).json({ error: 'Failed to delete user' });
   }
-}
+};
 
-
-
-module.exports = { loginUser, signupUser, getUsers, getUser, deleteUser};
+module.exports = { loginUser, signupUser, getUsers, getUser, deleteUser };

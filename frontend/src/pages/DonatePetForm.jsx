@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Box, Grid, MenuItem, InputLabel, FormControl, Select } from '@mui/material';
+import { TextField, Button, Typography, Box, Grid, MenuItem, InputLabel, FormControl, Select, CircularProgress } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
 import donateImage from '../assets/donate-page-image.png';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Input = styled('input')({
   display: 'none',
@@ -19,6 +21,8 @@ const DonatePet = () => {
   });
 
   const [imagePreview, setImagePreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [imageError, setImageError] = useState('');
 
   const handleChange = (e) => {
     setPetData({ ...petData, [e.target.name]: e.target.value });
@@ -26,15 +30,24 @@ const DonatePet = () => {
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    setPetData({ ...petData, image: file });
+    if (file) {
+      const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+      if (!validTypes.includes(file.type)) {
+        setImageError('Invalid file type. Please upload an image (JPEG, PNG, or GIF).');
+        return;
+      }
+      setImageError('');
+      setPetData({ ...petData, image: file });
 
-    const reader = new FileReader();
-    reader.onloadend = () => setImagePreview(reader.result);
-    reader.readAsDataURL(file);
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const formData = new FormData();
     formData.append('file', petData.image);
@@ -45,49 +58,40 @@ const DonatePet = () => {
     formData.append('species', petData.species);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/v1/pets', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      const token = localStorage.getItem('authToken');
+      const response = await axios.post('/api/v1/donate', formData, {
+        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
       });
-      alert('Pet donated successfully');
+      toast.success('Pet donated successfully!', { position: 'top-center' });
       console.log(response.data);
+
+      // Clear form after successful submission
+      setPetData({
+        name: '',
+        breed: '',
+        age: '',
+        description: '',
+        species: '',
+        image: null,
+      });
+      setImagePreview(null); // Clear image preview
     } catch (error) {
-      alert('Failed to donate pet');
+      toast.error('Failed to donate pet. Please try again later.', { position: 'top-center' });
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Box
-      sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'center', alignItems: 'center', padding: 4 }}
-    >
-      <Box
-        sx={{
-          flex: 1,
-          textAlign: 'center',
-          padding: 3,
-          backgroundColor: '#fff',
-          borderRadius: '10px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Box
-          component="img"
-          src={donateImage}
-          alt="Thank you for donating"
-          sx={{ width: '60%', borderRadius: '10px', objectFit: 'cover', transition: 'transform 0.3s ease','&:hover': { transform: 'translateY(-10px)' } }}
-        />
+    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'center', alignItems: 'center', padding: 4 }}>
+      <Box sx={{ flex: 1, textAlign: 'center', padding: 3, backgroundColor: '#fff', borderRadius: '10px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <Box component="img" src={donateImage} alt="Thank you for donating" sx={{ width: '60%', borderRadius: '10px', objectFit: 'cover', transition: 'transform 0.3s ease', '&:hover': { transform: 'translateY(-10px)' } }} />
         <Typography variant="h4" sx={{ mt: 2 }}>Thank You for Donating</Typography>
         <Typography variant="body1" sx={{ mt: 1 }}>Your donation helps animals in need find their forever homes.</Typography>
       </Box>
 
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{ flex: 1, maxWidth: '600px', padding: 3, backgroundColor: '#fff', borderRadius: '10px' }}
-      >
+      <Box component="form" onSubmit={handleSubmit} sx={{ flex: 1, maxWidth: '600px', padding: 3, backgroundColor: '#fff', borderRadius: '10px' }}>
         <Typography variant="h4" sx={{ mb: 3, textAlign: 'center' }}>Donate a Pet</Typography>
 
         <Grid container spacing={3}>
@@ -124,6 +128,7 @@ const DonatePet = () => {
               <Input accept="image/*" id="image-upload" type="file" onChange={handleImageUpload} />
               <Button variant="contained" component="span">Upload Pet Image</Button>
             </label>
+            {imageError && <Typography variant="body2" color="error">{imageError}</Typography>}
           </Grid>
 
           {imagePreview && (
@@ -133,7 +138,9 @@ const DonatePet = () => {
           )}
 
           <Grid item xs={12}>
-            <Button variant="contained" type="submit" fullWidth>Donate Pet</Button>
+            <Button variant="contained" type="submit" fullWidth disabled={loading}>
+              {loading ? <CircularProgress size={24} /> : 'Donate Pet'}
+            </Button>
           </Grid>
         </Grid>
       </Box>
