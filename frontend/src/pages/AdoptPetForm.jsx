@@ -29,6 +29,11 @@ const AdoptPage = () => {
   const [pet, setPet] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    userId: '', 
+    petId: id,
+    message: '',
+  });
 
   useEffect(() => {
     const fetchPet = async () => {
@@ -36,6 +41,7 @@ const AdoptPage = () => {
         const response = await axios.get(`http://localhost:5000/api/v1/pets/${id}`);
         setPet(response.data);
       } catch (err) {
+        console.error(error)
         setError('Error fetching pet details');
       } finally {
         setLoading(false);
@@ -44,6 +50,21 @@ const AdoptPage = () => {
 
     fetchPet();
   }, [id]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:5000/api/v1/adoption', formData);
+      alert(response.data.message);
+    } catch (err) {
+      setError('Failed to submit adoption request');
+    }
+  };
 
   if (loading) {
     return (
@@ -104,11 +125,14 @@ const AdoptPage = () => {
             <Typography variant="h5" sx={{ mb: 2 }}>
               Adoption Form
             </Typography>
-            <form>
+            <form onSubmit={handleSubmit}>
               <TextField
                 fullWidth
                 label="Your Name"
                 variant="outlined"
+                name="userId" // Assuming you set the logged-in user ID here
+                value={formData.userId}
+                onChange={handleChange}
                 sx={{ mb: 2 }}
               />
               <TextField
@@ -116,6 +140,7 @@ const AdoptPage = () => {
                 label="Email"
                 variant="outlined"
                 type="email"
+                name="email" // You can capture the email separately if needed
                 sx={{ mb: 2 }}
               />
               <TextField
@@ -123,6 +148,7 @@ const AdoptPage = () => {
                 label="Phone Number"
                 variant="outlined"
                 type="tel"
+                name="phone" // You can capture the phone separately if needed
                 sx={{ mb: 2 }}
               />
               <TextField
@@ -131,9 +157,12 @@ const AdoptPage = () => {
                 variant="outlined"
                 multiline
                 rows={4}
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
                 sx={{ mb: 2 }}
               />
-              <Button variant="contained" color="primary" fullWidth>
+              <Button variant="contained" color="primary" type="submit" fullWidth>
                 Submit Application
               </Button>
             </form>
