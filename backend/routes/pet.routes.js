@@ -11,10 +11,10 @@ const {
 } = require('../controllers/pet.controllers.js')
 
 router.get('/' , authMiddleware, getPets)
-router.get('/:id', getPet)
+router.get('/:id', authMiddleware, getPet)
 // router.post('/', upload.single('image'), createPet)
-router.delete('/:id', deletePet)
-router.patch('/:id', updatePet)
+router.delete('/:id',authMiddleware, deletePet)
+router.patch('/:id', authMiddleware, updatePet)
 
 
 module.exports = router;
