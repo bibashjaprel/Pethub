@@ -9,6 +9,7 @@ const userRoutes = require('./routes/user.routes.js');
 const petRoutes = require('./routes/pet.routes.js');
 const adoptionRoutes = require('./routes/adoption.routes.js')
 const petDonateRoutes = require('./routes/petDonate.routes.js')
+const adoptionRequestRoutes = require('./routes/adoptionapplication.routes.js')
 
 
 connectDB();
@@ -30,6 +31,7 @@ app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/pets', petRoutes);
 app.use('/api/v1/adoption', adoptionRoutes);
 app.use('/api/v1/donate', petDonateRoutes);
+app.use('/api/v1/adoptionrequest', adoptionRequestRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
