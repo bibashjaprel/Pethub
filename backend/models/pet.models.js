@@ -23,7 +23,12 @@ const petSchema = new mongoose.Schema({
   },
   image: {
     type: String
-  }
+  },
+  status: { 
+    type: String, 
+    enum: ['Pending', 'available'], 
+    default: 'Pending' 
+  },
 
 },{timestamps: true})
 
