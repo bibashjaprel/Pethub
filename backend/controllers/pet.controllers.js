@@ -15,7 +15,8 @@ const getPets = async (req, res) => {
 //get pending peetts
 const getPendingPets = async (req, res) => {
   try {
-    const pets = await Pet.find({status: 'pending' });
+    const pets = await Pet.find({status: 'Pending' });
+    console.log(pets)
     res.status(200).json(pets);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch pets' });
@@ -47,7 +48,7 @@ const updatePendingPetStatus = async (req, res) => {
       return res.status(404).json({ error: 'Pet not found' });
     }
 
-    res.status(200).json(updatedPet); // Return the updated pet
+    res.status(200).json(updatedPet);
   } catch (error) {
     res.status(500).json({ error: 'Failed to update pet status' });
   }

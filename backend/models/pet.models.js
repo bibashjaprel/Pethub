@@ -24,14 +24,17 @@ const petSchema = new mongoose.Schema({
   image: {
     type: String
   },
+  doner:{
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User'
+  },
   status: { 
     type: String, 
-    enum: ['Pending', 'available'], 
+    enum: ['Pending', 'approved', 'adopted'], 
     default: 'Pending' 
   },
 
 },{timestamps: true})
 
-// export const Pet = mongoose.model("Pet", petSchem);
 module.exports = mongoose.model("Pet", petSchema)
 
