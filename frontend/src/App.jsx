@@ -15,8 +15,8 @@ import UnauthorizedPage from './components/UnauthorizedPage';
 const App = () => {
   return (
     <Router>
-      <Navbar /> {/* Navbar will be visible on all routes */}
-      <Routes>
+      <Navbar /> 
+         <Routes>
          <Route path="/admin/v1/dashboard" element={<Dashboard />} />
          <Route path="/" element={<Home />} />
         <Route path="/all-pets" element={<AllPets />} />
