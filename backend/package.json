@@ -4,7 +4,7 @@
   "description": "Pet Adoption System",
   "main": "index.js",
   "scripts": {
-    "dev": "node index.js"
+    "dev": "nodemon index.js"
   },
   "author": "Bibash Japrel",
   "license": "ISC",

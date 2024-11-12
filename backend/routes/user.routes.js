@@ -10,7 +10,7 @@ router.post('/login', loginUser)
 router.post('/signup',  signupUser)
 
 //user routes
-router.get('/users' , authMiddleware, getUsers)
+router.get('/users' , getUsers)
 router.get('/:id', authMiddleware, getUser)
 router.delete('/delete/:id', authMiddleware, deleteUser)
 
