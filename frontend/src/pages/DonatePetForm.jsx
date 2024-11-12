@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Box, Grid, MenuItem, InputLabel, FormControl, Select, CircularProgress } from '@mui/material';
+import { TextField, Button, Typography, Box, Grid, MenuItem, InputLabel, FormControl, Select, CircularProgress, Snackbar } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
 import donateImage from '../assets/donate-page-image.png';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const Input = styled('input')({
   display: 'none',
@@ -23,6 +21,9 @@ const DonatePet = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [imageError, setImageError] = useState('');
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   const handleChange = (e) => {
     setPetData({ ...petData, [e.target.name]: e.target.value });
@@ -62,7 +63,12 @@ const DonatePet = () => {
       const response = await axios.post('/api/v1/donate', formData, {
         headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
       });
-      toast.success('Pet donated successfully!', { position: 'top-center' });
+
+      // Display success message
+      setSnackbarMessage('Pet donated successfully!');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+
       console.log(response.data);
 
       // Clear form after successful submission
@@ -76,11 +82,20 @@ const DonatePet = () => {
       });
       setImagePreview(null); // Clear image preview
     } catch (error) {
-      toast.error('Failed to donate pet. Please try again later.', { position: 'top-center' });
+      // Display error message
+      setSnackbarMessage('Failed to donate pet. Please try again later.');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+
       console.error(error);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Close Snackbar
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -144,8 +159,19 @@ const DonatePet = () => {
           </Grid>
         </Grid>
       </Box>
+
+      {/* Snackbar for success or error messages */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        message={snackbarMessage}
+        severity={snackbarSeverity} 
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      />
     </Box>
   );
 };
 
 export default DonatePet;
+

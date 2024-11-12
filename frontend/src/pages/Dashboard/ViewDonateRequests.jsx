@@ -6,10 +6,9 @@ import axios from 'axios';
 function ViewDonateRequests() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // For managing error state
-  const [successMessage, setSuccessMessage] = useState(null); // For managing success message
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
-  // Fetch the adoption requests data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -21,7 +20,7 @@ function ViewDonateRequests() {
           breed: item.breed,
           age: item.age,
           status: item.status,
-          donorName: `${item.donor.firstname} ${item.donor.lastname}`, // Concatenate donor's first and last name
+          donorName: `${item.donor?.firstname} ${item.donor?.lastname}`,
           description: item.description,
           image: item.image,
         }));
@@ -37,13 +36,12 @@ function ViewDonateRequests() {
     fetchData();
   }, []);
 
-  // Handle status update
+  
   const handleUpdateStatus = async (row) => {
-    const newStatus = 'available'; // Correct the typo here
+    const newStatus = 'available';
 
     try {
       const response = await axios.put(`/api/v1/pets/pending/${row.id}`, { status: newStatus });
-      // Optimistically update the local state to reflect the change
       setRows((prevRows) =>
         prevRows.map((r) =>
           r.id === row.id ? { ...r, status: newStatus } : r
@@ -56,27 +54,36 @@ function ViewDonateRequests() {
     }
   };
 
-  // Snackbar component to display error or success messages
   const handleCloseSnackbar = () => {
     setError(null);
     setSuccessMessage(null);
   };
 
-  // Columns for the DataGrid
   const columns = [
     { field: 'id', headerName: 'ID', width: 90 },
     { field: 'petName', headerName: 'Pet Name', width: 150 },
     { field: 'species', headerName: 'Species', width: 120 },
     { field: 'breed', headerName: 'Breed', width: 120 },
     { field: 'age', headerName: 'Age', width: 100 },
-    { field: 'donorName', headerName: 'Donor Name', width: 200 }, // Donor Name column
-    { field: 'status', headerName: 'Status', width: 150, editable: true },
+    { field: 'donorName', headerName: 'Donor Name', width: 200 },
+    {
+      field: 'status',
+      headerName: 'Status',
+      width: 150,
+      renderCell: (params) => (
+        <Typography variant="body2">{params.row.status}</Typography> 
+      ),
+    },
     {
       field: 'action',
       headerName: 'Action',
-      width: 120,
+      width: 150,
       renderCell: (params) => (
-        <Button variant="contained" color="primary" onClick={() => handleUpdateStatus(params.row)}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => handleUpdateStatus(params.row)}
+        >
           Update Status
         </Button>
       ),
@@ -120,3 +127,4 @@ function ViewDonateRequests() {
 }
 
 export default ViewDonateRequests;
+
