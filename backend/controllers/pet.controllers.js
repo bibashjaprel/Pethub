@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Pet = require('../models/pet.models.js');
 const cloudinary = require('../config/cloudinary.js');
 
-// get all pets
+// get all pets approved 
 const getPets = async (req, res) => {
   try {
     const pets = await Pet.find({status: 'available' });
@@ -11,6 +11,50 @@ const getPets = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch pets' });
   }
 };
+
+//get pending peetts
+const getPendingPets = async (req, res) => {
+  try {
+    const pets = await Pet.find({status: 'pending' });
+    res.status(200).json(pets);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch pets' });
+  }
+};
+
+
+
+const updatePendingPetStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  console.log(status)
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: 'Invalid pet ID' });
+  }
+
+  if (!['available', 'pending'].includes(status)) {
+    return res.status(400).json({ error: 'Invalid status value' });
+  }
+
+  try {
+    const updatedPet = await Pet.findByIdAndUpdate(
+      id,
+      { status }
+    );
+
+    if (!updatedPet) {
+      return res.status(404).json({ error: 'Pet not found' });
+    }
+
+    res.status(200).json(updatedPet); // Return the updated pet
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update pet status' });
+  }
+};
+
+
+
 
 // get single pet
 const getPet = async (req, res) => {
@@ -120,4 +164,6 @@ module.exports = {
   createPet,
   deletePet,
   updatePet,
+  getPendingPets,
+  updatePendingPetStatus,
 };
