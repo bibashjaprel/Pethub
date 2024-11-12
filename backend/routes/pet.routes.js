@@ -1,18 +1,19 @@
 const express = require('express')
 const router = express.Router();
-// const upload = require('../middlewares/multer.js')
 const authMiddleware = require('../middlewares/authMiddleware.js');
 const {
   getPets,
   getPet,
-  createPet,
+  getPendingPets,
   deletePet,
-  updatePet
+  updatePet,
+  updatePendingPetStatus,
 } = require('../controllers/pet.controllers.js')
 
-router.get('/' , authMiddleware, getPets)
+router.get('/' , getPets)
+router.get('/pending' , getPendingPets)
+router.put('/pending/:id', updatePendingPetStatus);
 router.get('/:id', authMiddleware, getPet)
-// router.post('/', upload.single('image'), createPet)
 router.delete('/:id',authMiddleware, deletePet)
 router.patch('/:id', authMiddleware, updatePet)
 
