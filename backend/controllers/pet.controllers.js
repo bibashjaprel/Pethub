@@ -15,7 +15,8 @@ const getPets = async (req, res) => {
 //get pending peetts
 const getPendingPets = async (req, res) => {
   try {
-    const pets = await Pet.find({status: 'Pending' });
+    const pets = await Pet.find({status: 'Pending' }).populate('doner', 'firstname lastname');
+    console.log(pets)
     console.log(pets)
     res.status(200).json(pets);
   } catch (error) {
