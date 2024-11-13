@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Box, Typography, Button, Snackbar } from '@mui/material';
+import { Box, Typography, Button, Snackbar, Alert } from '@mui/material';
 import axios from 'axios';
 
 function ViewDonateRequests() {
@@ -9,51 +9,64 @@ function ViewDonateRequests() {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem('authToken');
-        const response = await axios.get('/api/v1/pets/pending', {
-          headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },        
-        });
-        const formattedData = response.data.map((item) => ({
-          id: item._id,
-          petName: item.name,
-          species: item.species,
-          breed: item.breed,
-          age: item.age,
-          status: item.status,
-          donorName: `${item.doner.firstname} ${item.doner.lastname}`,
-          description: item.description,
-          image: item.image,
-        }));
-                setRows(formattedData);
-      } catch (error) {
-        console.error('Error fetching adoption requests:', error);
-        setError('Failed to fetch adoption requests.');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('authToken');
+      const response = await axios.get('/api/v1/pets/pending', {
+        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
+      });
+      const formattedData = response.data.map((item) => ({
+        id: item._id,
+        petName: item.name,
+        species: item.species,
+        breed: item.breed,
+        age: item.age,
+        status: item.status,
+        donorName: `${item.doner.firstname} ${item.doner.lastname}`,
+        description: item.description,
+        image: item.image,
+      }));
+      setRows(formattedData);
+    } catch (error) {
+      console.error('Error fetching adoption requests:', error);
+      setError('Failed to fetch adoption requests.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
 
-  
   const handleUpdateStatus = async (row) => {
     const newStatus = 'available';
 
     try {
-      const response = await axios.put(`/api/v1/pets/pending/${row.id}`, { status: newStatus });
       setRows((prevRows) =>
-        prevRows.map((r) =>
-          r.id === row.id ? { ...r, status: newStatus } : r
-        )
+        prevRows.map((r) => (r.id === row.id ? { ...r, status: newStatus } : r))
       );
+
+      await axios.put(`/api/v1/pets/pending/${row.id}`,{ status: newStatus },{
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+          },
+        }
+      );
+      
+      // Re-fetch to ensure data consistency
+      fetchData();
+
       setSuccessMessage('Pet status updated successfully.');
     } catch (error) {
       console.error('Error updating status:', error.response?.data?.error || error.message);
       setError('Failed to update pet status.');
+      // Revert UI in case of error
+      setRows((prevRows) =>
+        prevRows.map((r) => (r.id === row.id ? { ...r, status: row.status } : r))
+      );
     }
   };
 
@@ -74,7 +87,7 @@ function ViewDonateRequests() {
       headerName: 'Status',
       width: 150,
       renderCell: (params) => (
-        <Typography variant="body2">{params.row.status}</Typography> 
+        <Typography variant="body2">{params.row.status}</Typography>
       ),
     },
     {
@@ -86,6 +99,7 @@ function ViewDonateRequests() {
           variant="contained"
           color="primary"
           onClick={() => handleUpdateStatus(params.row)}
+          disabled={params.row.status === 'available'}
         >
           Update Status
         </Button>
@@ -108,26 +122,23 @@ function ViewDonateRequests() {
 
       {/* Snackbar for error handling */}
       {error && (
-        <Snackbar
-          open={Boolean(error)}
-          autoHideDuration={6000}
-          message={error}
-          onClose={handleCloseSnackbar}
-        />
+        <Snackbar open autoHideDuration={6000} onClose={handleCloseSnackbar}>
+          <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+            {error}
+          </Alert>
+        </Snackbar>
       )}
 
       {/* Snackbar for success message */}
       {successMessage && (
-        <Snackbar
-          open={Boolean(successMessage)}
-          autoHideDuration={6000}
-          message={successMessage}
-          onClose={handleCloseSnackbar}
-        />
+        <Snackbar open autoHideDuration={6000} onClose={handleCloseSnackbar}>
+          <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+            {successMessage}
+          </Alert>
+        </Snackbar>
       )}
     </Box>
   );
 }
 
 export default ViewDonateRequests;
-

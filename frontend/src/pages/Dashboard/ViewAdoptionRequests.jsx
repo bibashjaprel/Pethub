@@ -35,7 +35,7 @@ function ViewPetAdoptionRequests() {
           breed: item.breed,
           age: item.age,
           status: item.status,
-          donor: item.donor,
+          donor: `${item.doner.firstname} ${item.doner.lastname}`,
           description: item.description,
           image: item.image,
           handleUpdateStatus: handleUpdateStatus, // Add the handler to each row
