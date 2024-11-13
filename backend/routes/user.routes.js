@@ -3,8 +3,6 @@ const router = express.Router()
 const {loginUser,signupUser, getUsers, getUser, deleteUser} = require('../controllers/user.controllers.js')
 const authMiddleware = require('../middlewares/authMiddleware.js');
 
-console.log(getUser)
-
 //auth routes
 router.post('/login', loginUser)
 router.post('/signup',  signupUser)
