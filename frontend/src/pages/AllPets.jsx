@@ -46,19 +46,15 @@ const Allpets = () => {
           },
         });
 
-        // check if the response is successful
         if (response.status === 200) {
           setPets(response.data);
         } else {
           setError(`Error fetching pets: ${response.statusText}`);
         }
       } catch (err) {
-        // handle network or server errors
         if (err.response) {
-          // The server responded with a status other than 2xx
           setError(`Server Error: ${err.response.status} - ${err.response.data.message || 'Something went wrong'}`);
         } else if (err.request) {
-          // The request was made but no response was received
           setError('Network Error: No response received from the server');
         } else {
           // Something happened in setting up the request
