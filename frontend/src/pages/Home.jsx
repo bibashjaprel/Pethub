@@ -4,16 +4,22 @@ import { Link } from 'react-router-dom';
 import Carousel from 'react-material-ui-carousel';
 import PetsIcon from '@mui/icons-material/Pets';
 import bannerImage from '../assets/banner2.jpg';
-
+import axios from 'axios';
 const Home = () => {
   const [recentPets, setRecentPets] = useState([]);
 
   useEffect(() => {
     const fetchRecentPets = async () => {
       try {
-        const response = await fetch('/api/v1/pets/');
-        const data = await response.json();
-        setRecentPets(data);
+	    const token = localStorage.getItem('authToken')      
+      const response = await axios.get('/api/v1/pets/availabe/', {
+		  headers: {
+			Authorization: `Bearer ${token}`
+		}
+	});
+
+        // const data = await response.json();
+        setRecentPets(response.data);
       } catch (error) {
         console.error('Error fetching recent pets:', error);
       }
