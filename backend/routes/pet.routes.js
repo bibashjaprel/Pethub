@@ -13,7 +13,7 @@ const {
 
 router.get('/', authMiddleware,getPets)
 router.get('/availabe', authMiddleware, getAvailablePets)
-router.get('/pending' ,authMiddleware, getPendingPets)
+router.get('/pending', authMiddleware, getPendingPets)
 router.put('/pending/:id', authMiddleware, updatePendingPetStatus);
 router.get('/:id', authMiddleware, getPet)
 router.delete('/:id',authMiddleware, deletePet)
