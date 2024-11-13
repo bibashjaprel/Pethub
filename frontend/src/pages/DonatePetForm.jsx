@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Box, Grid, MenuItem, InputLabel, FormControl, Select, CircularProgress, Snackbar } from '@mui/material';
+import { TextField, Button, Typography, Box, Grid, MenuItem, InputLabel, FormControl, Select, CircularProgress, Snackbar, Alert } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
 import donateImage from '../assets/donate-page-image.png';
@@ -100,18 +100,27 @@ const DonatePet = () => {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'center', alignItems: 'center', padding: 4 }}>
+      {/* Left side with image and text */}
       <Box sx={{ flex: 1, textAlign: 'center', padding: 3, backgroundColor: '#fff', borderRadius: '10px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
         <Box component="img" src={donateImage} alt="Thank you for donating" sx={{ width: '60%', borderRadius: '10px', objectFit: 'cover', transition: 'transform 0.3s ease', '&:hover': { transform: 'translateY(-10px)' } }} />
         <Typography variant="h4" sx={{ mt: 2 }}>Thank You for Donating</Typography>
         <Typography variant="body1" sx={{ mt: 1 }}>Your donation helps animals in need find their forever homes.</Typography>
       </Box>
 
+      {/* Right side with form */}
       <Box component="form" onSubmit={handleSubmit} sx={{ flex: 1, maxWidth: '600px', padding: 3, backgroundColor: '#fff', borderRadius: '10px' }}>
         <Typography variant="h4" sx={{ mb: 3, textAlign: 'center' }}>Donate a Pet</Typography>
 
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <TextField fullWidth label="Pet Name" name="name" value={petData.name} onChange={handleChange} required />
+            <TextField
+              fullWidth
+              label="Pet Name"
+              name="name"
+              value={petData.name}
+              onChange={handleChange}
+              required
+            />
           </Grid>
 
           <Grid item xs={12}>
@@ -127,15 +136,39 @@ const DonatePet = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <TextField fullWidth label="Breed" name="breed" value={petData.breed} onChange={handleChange} required />
+            <TextField
+              fullWidth
+              label="Breed"
+              name="breed"
+              value={petData.breed}
+              onChange={handleChange}
+              required
+            />
           </Grid>
 
           <Grid item xs={12}>
-            <TextField fullWidth label="Age" name="age" value={petData.age} onChange={handleChange} required type="number" />
+            <TextField
+              fullWidth
+              label="Age"
+              name="age"
+              value={petData.age}
+              onChange={handleChange}
+              required
+              type="number"
+            />
           </Grid>
 
           <Grid item xs={12}>
-            <TextField fullWidth label="Description" name="description" value={petData.description} onChange={handleChange} required multiline rows={4} />
+            <TextField
+              fullWidth
+              label="Description"
+              name="description"
+              value={petData.description}
+              onChange={handleChange}
+              required
+              multiline
+              rows={4}
+            />
           </Grid>
 
           <Grid item xs={12}>
@@ -165,10 +198,12 @@ const DonatePet = () => {
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        message={snackbarMessage}
-        severity={snackbarSeverity} 
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      />
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
