@@ -32,9 +32,5 @@ const getUser = () => {
   return user ? JSON.parse(user) : null; // Parse and return user data if available
 };
 
-// const getRole = () => {
-//   const role = localStorage.getItem('role')
-//   return role ? JSON.parse(role) : null;
-// }
 
 export { setTokenWithExpiry, isAuthenticated, clearToken, getUser };

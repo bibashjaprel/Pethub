@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 export const getAdoptionRequests = async () => {
   try {
     const response = await axios.get('/api/adoption-requests');
@@ -20,9 +20,6 @@ export const getAdoptionApplications = async () => {
   }
 };
 
-export const clearToken = () => {
-  localStorage.removeItem('token');
-};
 
 // Users
 export const getUser = async () => {
@@ -65,3 +62,5 @@ export const deletePet = async (petId) => {
     throw error;
   }
 };
+
+
