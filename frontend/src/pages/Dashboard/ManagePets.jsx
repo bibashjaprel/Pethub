@@ -1,52 +1,83 @@
-import React, { useEffect, useState } from 'react';
-import { getPet, deletePet } from '../../utils/apiHelpers'; 
-import { Box, Typography, Button, TextField } from '@mui/material';
+import React, { useEffect, useState } from 'react'; 
+import { Box, Typography, Button, TextField, Snackbar } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const ManagePets = () => {
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPets = async () => {
       try {
-        const data = await getPet();
-        setPets(data);
+        const token = localStorage.getItem('authToken');
+        const response = await axios.get(`/api/v1/pets/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 200) {
+          setPets(response.data);
+        } else {
+          setError(`Error fetching pets: ${response.statusText}`);
+        }
       } catch (err) {
-        setError('Failed to fetch pets');
+        if (err.response) {
+          setError(`Server Error: ${err.response.status} - ${err.response.data.message || 'Something went wrong'}`);
+        } else if (err.request) {
+          setError('Network Error: No response received from the server');
+        } else {
+          setError(`Error: ${err.message}`);
+        }
       } finally {
         setLoading(false);
       }
     };
-
     fetchPets();
   }, []);
 
   const handleDeletePet = async (petId) => {
     try {
-      await deletePet(petId);
+      const token = localStorage.getItem('authToken');
+      await axios.delete(`/api/v1/pets/${petId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setPets((prevPets) => prevPets.filter(pet => pet._id !== petId));
+      setSuccessMessage('Pet deleted successfully.');
     } catch (err) {
+      console.log(err)
       setError('Failed to delete pet');
     }
   };
 
   const handleAddPet = () => {
-    navigate('/pets/add'); // Adjust the path as necessary for adding pets
+    navigate('/pets/add');
   };
 
   const handleClearSearch = () => {
-    setSearchTerm(''); // Clear the search term
+    setSearchTerm('');
   };
 
-  const filteredPets = pets.filter(pet =>
-    pet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    pet._id.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleCloseSnackbar = () => {
+    setError(null);
+    setSuccessMessage(null);
+  };
+
+  // Filter pets based on name, ID, or donor name
+  const filteredPets = pets.filter(pet => {
+    const donorName = pet.doner ? `${pet.doner.firstname} ${pet.doner.lastname}` : '';
+    return (
+      pet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      pet._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      donorName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
   if (loading) {
     return <div>Loading...</div>;
@@ -61,7 +92,16 @@ const ManagePets = () => {
     { field: 'name', headerName: 'Name', width: 150 },
     { field: 'breed', headerName: 'Breed', width: 130 },
     { field: 'age', headerName: 'Age', width: 100 },
-    { field: 'owner', headerName: 'Owner', width: 150 },
+    {
+      field: 'doner',
+      headerName: 'Donor',
+      width: 150,
+      renderCell: (params) => {
+        const donor = params.row.doner;
+        return donor ? `${donor.firstname} ${donor.lastname}` : 'Unknown';
+      },
+    },
+    { field: 'status', headerName: 'Status', width: 150 },
     {
       field: 'actions',
       headerName: 'Actions',
@@ -71,7 +111,7 @@ const ManagePets = () => {
           <Button variant="outlined" color="primary" onClick={() => navigate(`/pets/${params.id}`)}>
             View
           </Button>
-          <Button variant="outlined" color="warning" onClick={() => navigate(`/pets/edit/${params.id}`)}>
+          <Button variant="outlined" color="warning" onClick={() => navigate(`/admin/dashboard/pets/edit/${params.id}`)}>
             Edit
           </Button>
           <Button variant="outlined" color="error" onClick={() => handleDeletePet(params.id)}>
@@ -89,12 +129,12 @@ const ManagePets = () => {
       </Typography>
       <Box display="flex" justifyContent="flex-end" mb={2}>
         <TextField 
-          label="Search by Name or ID" 
+          label="Search by Name, ID, or Donor" 
           variant="outlined" 
           size="small" 
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{ mr: 1 }} // Margin to the right
+          sx={{ mr: 1 }} 
         />
         <Button variant="contained" onClick={handleClearSearch} size="small">
           Clear
@@ -107,7 +147,7 @@ const ManagePets = () => {
           pageSize={5} 
           rowsPerPageOptions={[5]} 
           disableSelectionOnClick 
-          getRowId={(row) => row._id} // Use _id as the unique identifier
+          getRowId={(row) => row._id} 
         />
       </div>
       <Box display="flex" justifyContent="flex-end" mt={2}>
@@ -115,6 +155,26 @@ const ManagePets = () => {
           Add New Pet
         </Button>
       </Box>
+
+      {/* Snackbar for error handling */}
+      {error && (
+        <Snackbar
+          open={Boolean(error)}
+          autoHideDuration={6000}
+          message={error}
+          onClose={handleCloseSnackbar}
+        />
+      )}
+
+      {/* Snackbar for success message */}
+      {successMessage && (
+        <Snackbar
+          open={Boolean(successMessage)}
+          autoHideDuration={6000}
+          message={successMessage}
+          onClose={handleCloseSnackbar}
+        />
+      )}
     </Box>
   );
 };
