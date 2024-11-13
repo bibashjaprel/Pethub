@@ -16,7 +16,6 @@ const storage = multer.diskStorage({
   },
 });
 
-// Initialize Multer with file size limit and file type filter
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 },  // Max file size: 5MB
@@ -33,20 +32,19 @@ const upload = multer({
 // POST route for uploading pet image to Cloudinary
 router.post('/upload-pet-image', upload, async (req, res) => {
   try {
-    // Check if file was uploaded
     if (!req.file) {
       return res.status(400).send('No file uploaded.');
     }
 
     // Upload the image to Cloudinary
     const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: 'pets',  // Specify folder in Cloudinary
+      folder: 'pets',  
       use_filename: true,  // Use the original file name in Cloudinary
-      unique_filename: true,  // Ensure the filename is unique
+      unique_filename: true,
     });
 
     // Clean up the uploaded file on the server after Cloudinary upload
-    fs.unlinkSync(req.file.path);  // Remove the file from the local server
+    fs.unlinkSync(req.file.path);
 
     // Send back the URL of the uploaded image
     res.status(200).json({ imageUrl: result.secure_url });
