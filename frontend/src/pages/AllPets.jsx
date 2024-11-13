@@ -4,13 +4,13 @@ import {
   Box,
   Paper,
   Typography,
-  CircularProgress,
   Button,
   styled,
   TextField,
   IconButton,
   AppBar,
   Toolbar,
+  Skeleton, // Import Skeleton
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Masonry from '@mui/lab/Masonry';
@@ -126,12 +126,19 @@ const Allpets = () => {
 
       <Box sx={{ width: '100%', minHeight: 800 }}>
         {loading ? (
-          <div className="min-h-screen flex justify-center items-center">
-            <CircularProgress />
-            <Typography variant="body1" sx={{ ml: 2, color: 'blue' }}>
-              Loading...
-            </Typography>
-          </div>
+          // Show Skeleton loaders instead of circular progress
+          <Masonry columns={{ xs: 1, sm: 2, md: 3, lg: 4 }} spacing={2}>
+            {[...Array(8)].map((_, index) => (
+              <PetCard key={index} sx={{ p: 2 }}>
+                <Skeleton variant="rectangular" width="100%" height={200} sx={{ borderRadius: 2 }} />
+                <Skeleton width="60%" sx={{ mt: 2 }} />
+                <Skeleton width="80%" sx={{ mt: 1 }} />
+                <Skeleton width="50%" sx={{ mt: 1 }} />
+                <Skeleton width="90%" sx={{ mt: 1 }} />
+                <Skeleton width="40%" sx={{ mt: 2 }} />
+              </PetCard>
+            ))}
+          </Masonry>
         ) : error ? (
           <Typography variant="body1" sx={{ color: 'red', textAlign: 'center', mt: 10 }}>
             {error}
@@ -193,3 +200,4 @@ const Allpets = () => {
 };
 
 export default Allpets;
+
