@@ -40,7 +40,7 @@ const Allpets = () => {
     const fetchPets = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        const response = await axios.get(`/api/v1/pets?type=${type || ''}`, {
+        const response = await axios.get(`/api/v1/pets/availabe/?type=${type || ''}`, {
           headers: {
              Authorization: `Bearer ${token}`,
           },
