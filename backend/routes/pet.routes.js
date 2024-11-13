@@ -10,9 +10,9 @@ const {
   updatePendingPetStatus,
 } = require('../controllers/pet.controllers.js')
 
-router.get('/' , getPets)
-router.get('/pending' , getPendingPets)
-router.put('/pending/:id', updatePendingPetStatus);
+router.get('/' , authMiddleware,getPets)
+router.get('/pending' ,authMiddleware, getPendingPets)
+router.put('/pending/:id', authMiddleware, updatePendingPetStatus);
 router.get('/:id', authMiddleware, getPet)
 router.delete('/:id',authMiddleware, deletePet)
 router.patch('/:id', authMiddleware, updatePet)
