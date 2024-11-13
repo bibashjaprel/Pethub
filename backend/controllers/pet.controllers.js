@@ -5,7 +5,17 @@ const cloudinary = require('../config/cloudinary.js');
 // get all pets approved 
 const getPets = async (req, res) => {
   try {
+    const pets = await Pet.find().populate('doner', 'firstname lastname');
+    res.status(200).json(pets);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch pets' });
+  }
+};
+
+const getAvailablePets = async (req, res) => {
+  try {
     const pets = await Pet.find({status: 'available' });
+    console.log(`pets ${pets}`)
     res.status(200).json(pets);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch pets' });
@@ -167,5 +177,6 @@ module.exports = {
   deletePet,
   updatePet,
   getPendingPets,
+  getAvailablePets,
   updatePendingPetStatus,
 };
