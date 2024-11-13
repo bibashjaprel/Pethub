@@ -12,7 +12,10 @@ function ViewDonateRequests() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/v1/pets/pending');
+        const token = localStorage.getItem('authToken');
+        const response = await axios.get('/api/v1/pets/pending', {
+          headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },        
+        });
         const formattedData = response.data.map((item) => ({
           id: item._id,
           petName: item.name,
@@ -20,11 +23,11 @@ function ViewDonateRequests() {
           breed: item.breed,
           age: item.age,
           status: item.status,
-          donorName: `${item.donor?.firstname} ${item.donor?.lastname}`,
+          donorName: `${item.doner.firstname} ${item.doner.lastname}`,
           description: item.description,
           image: item.image,
         }));
-        setRows(formattedData);
+                setRows(formattedData);
       } catch (error) {
         console.error('Error fetching adoption requests:', error);
         setError('Failed to fetch adoption requests.');
