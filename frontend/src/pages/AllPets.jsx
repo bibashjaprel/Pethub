@@ -10,7 +10,7 @@ import {
   IconButton,
   AppBar,
   Toolbar,
-  Skeleton, // Import Skeleton
+  Skeleton,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Masonry from '@mui/lab/Masonry';
