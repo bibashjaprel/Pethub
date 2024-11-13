@@ -42,7 +42,7 @@
       const fetchPet = async () => {
         try {
           const token = localStorage.getItem('authToken');
-          const response = await axios.get(`http://localhost:5000/api/v1/pets/${id}`, {
+          const response = await axios.get(`/api/v1/pets/${id}`, {
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
           });
           setPet(response.data);
@@ -78,7 +78,7 @@
       };
 
       try {
-        const response = await axios.post('http://localhost:5000/api/v1/adoptionrequest', extendedFormData, {
+        const response = await axios.post('/api/v1/adoption', extendedFormData, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
