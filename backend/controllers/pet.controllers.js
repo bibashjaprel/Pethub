@@ -15,7 +15,6 @@ const getPets = async (req, res) => {
 const getAvailablePets = async (req, res) => {
   try {
     const pets = await Pet.find({status: 'available' });
-    console.log(`pets ${pets}`)
     res.status(200).json(pets);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch pets' });
@@ -26,8 +25,6 @@ const getAvailablePets = async (req, res) => {
 const getPendingPets = async (req, res) => {
   try {
     const pets = await Pet.find({status: 'Pending' }).populate('doner', 'firstname lastname');
-    console.log(pets)
-    console.log(pets)
     res.status(200).json(pets);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch pets' });
@@ -39,7 +36,6 @@ const getPendingPets = async (req, res) => {
 const updatePendingPetStatus = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
-  console.log(status)
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: 'Invalid pet ID' });
