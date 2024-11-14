@@ -25,8 +25,8 @@ function ViewAdoptionRequests() {
         breed: item.pet.breed,
         age: item.pet.age,
         status: item.status,
-        donorName: `${item.user.firstname} ${item.user.lastname}`,
-        description: item.pet.description,
+        donorName: `${item.user.firstname} ${item.user.lastname} `,
+        description: item.message,
         image: item.pet.image,
       }));
 
@@ -92,6 +92,8 @@ function ViewAdoptionRequests() {
     { field: 'breed', headerName: 'Breed', width: 120 },
     { field: 'age', headerName: 'Age', width: 100 },
     { field: 'donorName', headerName: 'Donor Name', width: 200 },
+    { field: 'description', headerName: 'Message', width: 200 },
+    
     {
       field: 'status',
       headerName: 'Status',
