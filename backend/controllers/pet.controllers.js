@@ -14,7 +14,7 @@ const getPets = async (req, res) => {
 
 const getAvailablePets = async (req, res) => {
   try {
-    const pets = await Pet.find({status: 'available' });
+    const pets = await Pet.find({status: 'available' }).sort({ createdAt: -1 });;
     res.status(200).json(pets);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch pets' });
