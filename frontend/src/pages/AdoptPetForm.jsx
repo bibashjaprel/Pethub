@@ -78,6 +78,7 @@
       };
 
       try {
+        axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
         const response = await axios.post('/api/v1/adoption', extendedFormData, {
           headers: {
             'Content-Type': 'application/json',

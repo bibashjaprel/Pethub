@@ -40,6 +40,7 @@ const Allpets = () => {
     const fetchPets = async () => {
       try {
         const token = localStorage.getItem('authToken');
+        axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
         const response = await axios.get(`/api/v1/pets/availabe/?type=${type || ''}`, {
           headers: {
              Authorization: `Bearer ${token}`,

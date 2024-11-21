@@ -16,6 +16,7 @@ const ManagePets = () => {
     const fetchPets = async () => {
       try {
         const token = localStorage.getItem('authToken');
+        axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
         const response = await axios.get(`/api/v1/pets/`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -45,6 +46,7 @@ const ManagePets = () => {
   const handleDeletePet = async (petId) => {
     try {
       const token = localStorage.getItem('authToken');
+      axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
       await axios.delete(`/api/v1/pets/${petId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });

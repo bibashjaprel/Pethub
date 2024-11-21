@@ -28,6 +28,7 @@ const AdoptPet = () => {
     e.preventDefault();
 
     try {
+      axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
       const response = await axios.post(`/api/v1/adopt/${petId}`, adopterData);
       setSuccessMessage('Your adoption request has been submitted successfully!');
       console.log(response.data);

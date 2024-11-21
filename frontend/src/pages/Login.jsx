@@ -16,6 +16,7 @@ const Login = () => {
     e.preventDefault();
     setError('');
     try {
+      axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
       const response = await axios.post('/api/v1/user/login', formData);
       setTokenWithExpiry(response.data.token, 30, response.data.user);
       navigate('/', { replace: true });

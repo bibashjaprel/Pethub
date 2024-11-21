@@ -60,6 +60,7 @@ const DonatePet = () => {
 
     try {
       const token = localStorage.getItem('authToken');
+      axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
       const response = await axios.post('/api/v1/donate', formData, {
         headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
       });

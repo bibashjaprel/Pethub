@@ -1,4 +1,5 @@
 import axios from 'axios';
+axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
 export const getAdoptionRequests = async () => {
   try {
     const response = await axios.get('/api/adoption-requests');
