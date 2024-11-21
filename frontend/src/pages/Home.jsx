@@ -5,31 +5,44 @@ import Carousel from 'react-material-ui-carousel';
 import PetsIcon from '@mui/icons-material/Pets';
 import bannerImage from '../assets/banner2.jpg';
 import axios from 'axios';
+
 const Home = () => {
   const [recentPets, setRecentPets] = useState([]);
 
   useEffect(() => {
     const fetchRecentPets = async () => {
       try {
-	    const token = localStorage.getItem('authToken')      
-      const response = await axios.get('/api/v1/pets/availabe/', {
-		  headers: {
-			Authorization: `Bearer ${token}`
-		}
-	});
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          console.error('Auth token not found in localStorage');
+          setRecentPets([]);
+          return;
+        }
 
-        // const data = await response.json();
-        setRecentPets(response.data);
+        const response = await axios.get('/api/v1/pets/availabe/', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        // Debugging: Log the response data
+        console.log('API Response:', response.data);
+
+        // Ensure response data is an array
+        setRecentPets(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error('Error fetching recent pets:', error);
+        setRecentPets([]); // Fallback to empty array on error
       }
     };
+
     fetchRecentPets();
   }, []);
 
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
       <Container maxWidth="lg">
+        {/* Banner Section */}
         <Box 
           sx={{
             textAlign: 'center',
@@ -48,9 +61,7 @@ const Home = () => {
           <Typography variant="h2" component="h1" sx={{ fontWeight: 'bold', mt: 2, mb: 1 }}>
             PetHub
           </Typography>
-          <Typography variant="h6">
-            Find your perfect pet companion today!
-          </Typography>
+          <Typography variant="h6">Find your perfect pet companion today!</Typography>
           <Button 
             variant="contained" 
             color="primary" 
@@ -63,27 +74,24 @@ const Home = () => {
           </Button>
         </Box>
 
+        {/* Recent Pets Section */}
         <Box sx={{ mb: 6 }}>
           <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 3, textAlign: 'center' }}>
             Recently Added Pets
           </Typography>
-          {recentPets.length > 0 ? (
+          {Array.isArray(recentPets) && recentPets.length > 0 ? (
             <Carousel animation="slide" interval={3000} indicators={false} navButtonsAlwaysVisible>
               {recentPets.map((pet) => (
                 <Card key={pet._id} sx={{ display: 'flex', alignItems: 'center', p: 2, m: 2 }}>
                   <CardMedia
                     component="img"
-                    image={pet.image || 'https://cdn.pixabay.com/photo/2023/10/01/12/56/shih-tzu-8287355_960_720.jpg' }
+                    image={pet.image || 'https://cdn.pixabay.com/photo/2023/10/01/12/56/shih-tzu-8287355_960_720.jpg'}
                     alt={pet.name}
                     sx={{ width: 200, borderRadius: 2 }}
                   />
                   <CardContent sx={{ flex: 1 }}>
-                    <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                      {pet.name}
-                    </Typography>
-                    <Typography variant="body1" color="textSecondary">
-                      {pet.species} - {pet.breed}
-                    </Typography>
+                    <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{pet.name}</Typography>
+                    <Typography variant="body1" color="textSecondary">{pet.species} - {pet.breed}</Typography>
                     <Button
                       variant="contained"
                       color="secondary"
@@ -104,12 +112,11 @@ const Home = () => {
           )}
         </Box>
 
+        {/* Features Section */}
         <Grid container spacing={4}>
           <Grid item xs={12} sm={4}>
             <Paper sx={{ textAlign: 'center', p: 4, borderRadius: 2, boxShadow: 2 }}>
-              <Typography variant="h5" gutterBottom>
-                Adopt a Pet
-              </Typography>
+              <Typography variant="h5" gutterBottom>Adopt a Pet</Typography>
               <Typography color="textSecondary" paragraph>
                 Browse through our list of pets available for adoption.
               </Typography>
@@ -126,9 +133,7 @@ const Home = () => {
 
           <Grid item xs={12} sm={4}>
             <Paper sx={{ textAlign: 'center', p: 4, borderRadius: 2, boxShadow: 2 }}>
-              <Typography variant="h5" gutterBottom>
-                Donate
-              </Typography>
+              <Typography variant="h5" gutterBottom>Donate</Typography>
               <Typography color="textSecondary" paragraph>
                 Help us continue our work by donating today.
               </Typography>
@@ -145,9 +150,7 @@ const Home = () => {
 
           <Grid item xs={12} sm={4}>
             <Paper sx={{ textAlign: 'center', p: 4, borderRadius: 2, boxShadow: 2 }}>
-              <Typography variant="h5" gutterBottom>
-                Contact Us
-              </Typography>
+              <Typography variant="h5" gutterBottom>Contact Us</Typography>
               <Typography color="textSecondary" paragraph>
                 Get in touch with us if you have any questions or concerns.
               </Typography>
