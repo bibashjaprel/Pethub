@@ -28,7 +28,7 @@ const AdoptPet = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`http://localhost:5000/api/v1/adopt/${petId}`, adopterData);
+      const response = await axios.post(`/api/v1/adopt/${petId}`, adopterData);
       setSuccessMessage('Your adoption request has been submitted successfully!');
       console.log(response.data);
     } catch (error) {

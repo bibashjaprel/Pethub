@@ -16,7 +16,7 @@ const Login = () => {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post('http://localhost:5000/api/v1/user/login', formData);
+      const response = await axios.post('/api/v1/user/login', formData);
       setTokenWithExpiry(response.data.token, 30, response.data.user);
       navigate('/', { replace: true });
     } catch (error) {

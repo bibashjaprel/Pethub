@@ -23,7 +23,7 @@ const Signup = () => {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post('http://localhost:5000/api/v1/user/signup', {...formData, role:defaultRole});
+      const response = await axios.post('/api/v1/user/signup', {...formData, role:defaultRole});
       setTokenWithExpiry(response.data.token, 30 );
       setTokenWithExpiry(response.data.token, 30, response.data.user, defaultRole);
       navigate('/login');
