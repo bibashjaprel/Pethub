@@ -22,10 +22,11 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.use(cors({
-  origin: 'pethub-rosy.vercel.app', 
-  methods: 'GET,POST,PUT,PATCH,DELETE,OPTIONS',
-  allowedHeaders: 'Content-Type,Authorization',
+  origin: ['http://localhost:3000', 'https://pethub-rosy.vercel.app'], 
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
 
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/pets', petRoutes);
