@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
 export const getAdoptionRequests = async () => {
   try {
     const response = await axios.get('/api/adoption-requests');
@@ -24,7 +23,7 @@ export const getAdoptionApplications = async () => {
 // Users
 export const getUser = async () => {
   try {
-    const response = await axios.get('http://localhost:5000/api/v1/user/users');
+    const response = await axios.get('/api/v1/user/users');
     return response.data;
   } catch (error) {
     console.error("Error fetching the users: ", error);
@@ -34,7 +33,7 @@ export const getUser = async () => {
 
 export const deleteUser = async (userId) => {
   try {
-    const response = await axios.delete(`http://localhost:5000/api/v1/user/delete/${userId}`);
+    const response = await axios.delete(`/api/v1/user/delete/${userId}`);
     return response.data; 
   } catch (error) {
     console.error(`Error while deleting user: ${error}`);
