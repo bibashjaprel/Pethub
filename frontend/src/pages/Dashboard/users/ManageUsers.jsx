@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getUser, deleteUser  } from '../../utils/apiHelpers'; // Adjust path as necessary
+import { getUser, deleteUser  } from '../../../utils/apiHelpers'; // Adjust path as necessary
 import { DataGrid } from '@mui/x-data-grid';
 import {
   Box,

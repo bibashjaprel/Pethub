@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TextField, Button, Typography, Box, Grid, MenuItem, InputLabel, FormControl, Select, CircularProgress, Snackbar, Alert } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
-import donateImage from '../assets/donate-page-image.png';
+import donateImage from '../../../assets/donate-page-image.png';
 
 const Input = styled('input')({
   display: 'none',

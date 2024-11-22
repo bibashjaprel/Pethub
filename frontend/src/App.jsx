@@ -2,16 +2,16 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar'; 
 import Dashboard from './pages/Dashboard/Dashborad'; 
-import AllPets from './pages/AllPets'; 
-import AdoptPage from './pages/AdoptPetForm';
+import AllPets from './pages/Dashboard/pets/AllPets'; 
+import AdoptPage from './pages/Dashboard/adoption/AdoptPetForm';
 import AboutUs from './pages/AboutUs';
 import Login from './pages/Login'; 
 import Signup from './pages/Signup';
 import Home from './pages/Home';
-import DonatePet from './pages/DonatePetForm';
+import DonatePet from './pages/Dashboard/donate/DonatePetForm';
 import Footer from './components/Footer';
 import UnauthorizedPage from './components/UnauthorizedPage';
-import Editpage from './pages/Dashboard/EditPet'
+import Editpage from './pages/Dashboard/pets/EditPet'
 
 const App = () => {
   return (

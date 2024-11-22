@@ -21,10 +21,10 @@ import { People, Pets, Assignment, Dashboard as DashboardIcon, AccountCircle, Ex
 import { Link, useNavigate } from 'react-router-dom';
 // Components for the different dashboard sections
 import AnalyzeDashboard from './AnalyzeDashboard';
-import ManageUsers from './ManageUsers';
-import ViewAdoptionRequests from './ViewAdoptionRequests';
-import ManagePets from './ManagePets';
-import ViewDonateRequests from './ViewDonateRequests';
+import ManageUsers from './users/ManageUsers';
+import ViewAdoptionRequests from './adoption/ViewAdoptionRequests';
+import ManagePets from './pets/ManagePets';
+import ViewDonateRequests from './donate/ViewDonateRequests';
 import { clearToken } from '../../utils/authHelpers';
 
 const drawerWidth = 240;
