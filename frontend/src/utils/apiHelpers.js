@@ -1,66 +1,73 @@
 import axios from 'axios';
-axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
-export const getAdoptionRequests = async () => {
+
+const BASE_URL = 'https://pethub-backend-3te5.onrender.com';
+
+// Set default configurations for axios
+axios.defaults.baseURL = BASE_URL;
+
+// Add Authorization header to every request if a token exists
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Handle API responses
+const handleResponse = (response) => response.data;
+
+// Handle API errors
+const handleError = (error) => {
+  console.error('API Error:', error?.response?.data || error.message);
+  throw error;
+};
+
+// Helper function for GET requests
+const apiGet = async (endpoint) => {
   try {
-    const response = await axios.get('/api/adoption-requests');
-    return response.data;
+    const response = await axios.get(endpoint);
+    return handleResponse(response);
   } catch (error) {
-    console.error("Error fetching adoption requests: ", error);
-    throw error;
+    handleError(error);
   }
 };
 
-export const getAdoptionApplications = async () => {
+// Helper function for POST requests
+const apiPost = async (endpoint, data) => {
   try {
-    const response = await axios.get('/api/adoption-applications');
-    return response.data;
+    const response = await axios.post(endpoint, data);
+    return handleResponse(response);
   } catch (error) {
-    console.error("Error fetching adoption applications: ", error);
-    throw error;
+    handleError(error);
   }
 };
 
-
-// Users
-export const getUser = async () => {
+// Helper function for DELETE requests
+const apiDelete = async (endpoint) => {
   try {
-    const response = await axios.get('/api/v1/user/users');
-    return response.data;
+    const response = await axios.delete(endpoint);
+    return handleResponse(response);
   } catch (error) {
-    console.error("Error fetching the users: ", error);
-    throw error;
+    handleError(error);
   }
 };
 
-export const deleteUser = async (userId) => {
-  try {
-    const response = await axios.delete(`/api/v1/user/delete/${userId}`);
-    return response.data; 
-  } catch (error) {
-    console.error(`Error while deleting user: ${error}`);
-    throw error;
-  }
-};
+// API Endpoints
 
-// Pets
-export const getPet = async (petId) => {
-  try {
-    const response = await axios.get(`/api/v1/pets`);
-    return response.data;
-  } catch (error) {
-    console.error(`Error fetching pet with ID ${petId}: `, error);
-    throw error;
-  }
-};
+// User APIs
+export const loginUser = async (credentials) => apiPost('/api/v1/user/login', credentials);
+export const getUser = async () => apiGet('/api/v1/user/users');
+export const deleteUser = async (userId) => apiDelete(`/api/v1/user/delete/${userId}`);
 
-export const deletePet = async (petId) => {
-  try {
-    const response = await axios.delete(`/api/v1/pets/${petId}`);
-    return response.data;
-  } catch (error) {
-    console.error(`Error while deleting pet with ID ${petId}: `, error); 
-    throw error;
-  }
-};
+// Pet APIs
+export const fetchRecentPets = async () => apiGet('/api/v1/pets/availabe/');
+export const getPet = async () => apiGet('/api/v1/pets');
+export const deletePet = async (petId) => apiDelete(`/api/v1/pets/${petId}`);
 
-
+// Adoption APIs
+export const getAdoptionRequests = async () => apiGet('/api/adoption-requests');
+export const getAdoptionApplications = async () => apiGet('/api/adoption-applications');

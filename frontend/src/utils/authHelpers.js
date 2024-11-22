@@ -4,7 +4,7 @@ const setTokenWithExpiry = (token, expiryDays, user, role) => {
   localStorage.setItem('authToken', token);
   localStorage.setItem('expiryDate', expiryDate.toString());
   localStorage.setItem('user', JSON.stringify(user)); // Store user as JSON string
- };
+};
 
 const isTokenValid = () => {
   const expiryDate = localStorage.getItem('expiryDate');
@@ -30,7 +30,6 @@ const clearToken = () => {
 const getUser = () => {
   const user = localStorage.getItem('user');
   return user ? JSON.parse(user) : null; // Parse and return user data if available
-};
-
+};  
 
 export { setTokenWithExpiry, isAuthenticated, clearToken, getUser };
