@@ -79,7 +79,6 @@ userSchema.statics.signup = async function (
       lastname
     });
 
-    console.log(user);
     return user;
   } catch (error) {
     throw new Error('Error during password hashing: ' + error.message);
