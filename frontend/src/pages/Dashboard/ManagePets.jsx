@@ -89,7 +89,7 @@ const ManagePets = () => {
   };
 
   const handleAddPet = () => {
-    navigate('/pets/add');
+    navigate('/donatepet');
   };
 
   const handleClearSearch = () => {

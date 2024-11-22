@@ -25,14 +25,8 @@ const Footer = () => {
             <Link href="/" color="inherit" underline="hover" display="block">
               Home
             </Link>
-            <Link href="/about" color="inherit" underline="hover" display="block">
-              About Us
-            </Link>
             <Link href="/contact" color="inherit" underline="hover" display="block">
-              Contact Us
-            </Link>
-            <Link href="/adopt" color="inherit" underline="hover" display="block">
-              Adopt a Pet
+              About Us
             </Link>
           </Grid>
 

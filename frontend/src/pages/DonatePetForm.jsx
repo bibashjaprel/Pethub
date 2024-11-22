@@ -105,7 +105,10 @@ const DonatePet = () => {
       <Box sx={{ flex: 1, textAlign: 'center', padding: 3, backgroundColor: '#fff', borderRadius: '10px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
         <Box component="img" src={donateImage} alt="Thank you for donating" sx={{ width: '60%', borderRadius: '10px', objectFit: 'cover', transition: 'transform 0.3s ease', '&:hover': { transform: 'translateY(-10px)' } }} />
         <Typography variant="h4" sx={{ mt: 2 }}>Thank You for Donating</Typography>
-        <Typography variant="body1" sx={{ mt: 1 }}>Your donation helps animals in need find their forever homes.</Typography>
+        <Typography variant="body1" sx={{ mt: 1 }}>Your donation helps animals in need find their forever homes. Your support is truly appreciated!</Typography>
+        <Typography variant="body2" sx={{ mt: 2, fontStyle: 'italic' }}>
+          PetHub is dedicated to helping pets find their loving homes. By donating a pet, you're making a lasting difference in an animal's life. Thank you for being part of the change!
+        </Typography>
       </Box>
 
       {/* Right side with form */}
@@ -134,6 +137,9 @@ const DonatePet = () => {
                 <MenuItem value="Other">Other</MenuItem>
               </Select>
             </FormControl>
+            <Typography variant="body2" sx={{ mt: 1, color: 'gray' }}>
+              Please select the species of your pet. If it's a unique species, choose 'Other'.
+            </Typography>
           </Grid>
 
           <Grid item xs={12}>
@@ -210,4 +216,3 @@ const DonatePet = () => {
 };
 
 export default DonatePet;
-
