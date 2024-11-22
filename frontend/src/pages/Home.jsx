@@ -18,7 +18,7 @@ const Home = () => {
           setRecentPets([]);
           return;
         }
-
+        axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
         const response = await axios.get('/api/v1/pets/availabe/', {
           headers: {
             Authorization: `Bearer ${token}`,

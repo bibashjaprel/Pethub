@@ -23,6 +23,7 @@ const Signup = () => {
     e.preventDefault();
     setError('');
     try {
+      axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
       const response = await axios.post('/api/v1/user/signup', {...formData, role:defaultRole});
       setTokenWithExpiry(response.data.token, 30 );
       setTokenWithExpiry(response.data.token, 30, response.data.user, defaultRole);
