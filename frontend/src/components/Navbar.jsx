@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { isAuthenticated, getUser, clearToken } from '../utils/authHelpers';
+import { getAdoptionRequests } from '../utils/apiHelpers';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -24,14 +25,8 @@ const Navbar = () => {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeLink, setActiveLink] = useState(location.pathname);
-  const [menuItems, setMenuItems] = useState([
-    { text: 'Home', path: '/' },
-    { text: 'Adopt', path: '/all-pets' },
-    { text: 'Donate', path: '/donatepet' },
-    { text: 'Contact Us', path: '/contact' },
-    { text: 'Login', path: '/login' },
-  ]);
-
+  const [menuItems, setMenuItems] = useState([]);
+  const [adoptionRequestsCount, setAdoptionRequestsCount] = useState(0);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -41,10 +36,21 @@ const Navbar = () => {
         { text: 'Donate', path: '/donatepet' },
         { text: 'Contact Us', path: '/contact' },
       ];
+
       if (role === 'admin') {
         newMenuItems.push({ text: 'Dashboard', path: '/admin/v1/dashboard' });
       }
+
       setMenuItems(newMenuItems);
+
+      // Fetch adoption requests count for admin role
+      if (role === 'admin') {
+        getAdoptionRequests()
+          .then((data) => {
+            setAdoptionRequestsCount(data.length); // Assuming the response is an array of requests
+          })
+          .catch((err) => console.error('Failed to fetch adoption requests:', err));
+      }
     } else {
       setMenuItems([
         { text: 'Home', path: '/' },
@@ -116,12 +122,26 @@ const Navbar = () => {
             </Button>
           ) : (
             <>
-            <Typography variant="body1" sx={{ mx: 1 }}>
-              Welcome,{' '}
-              <Typography component="span" sx={{ color: 'blue' }}>
-              {user?.firstname || 'User'} {user?.lastname}
+              <Typography variant="body1" sx={{ mx: 1 }}>
+                Welcome,{' '}
+                <Typography component="span" sx={{ color: 'blue' }}>
+                  {user?.firstname || 'User'} {user?.lastname}
+                </Typography>
               </Typography>
-            </Typography>
+
+              {role === 'admin' && adoptionRequestsCount > 0 && (
+                <Button
+                  component={Link}
+                  to="/admin/v1/dashboard"
+                  sx={{
+                    marginLeft: 2,
+                    backgroundColor: 'red',
+                    '&:hover': { backgroundColor: 'darkred' },
+                  }}
+                >
+                  {`Adoption Requests (${adoptionRequestsCount})`}
+                </Button>
+              )}
 
               <Button
                 variant="outlined"
