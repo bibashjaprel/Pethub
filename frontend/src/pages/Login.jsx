@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import { loginUser } from '../utils/apiHelpers';
 import { setTokenWithExpiry } from '../utils/authHelpers';
 
 const Login = () => {
@@ -16,12 +16,11 @@ const Login = () => {
     e.preventDefault();
     setError('');
     try {
-      axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
-      const response = await axios.post('/api/v1/user/login', formData);
-      setTokenWithExpiry(response.data.token, 30, response.data.user);
+      const { token, user } = await loginUser(formData); // Call API via apiHelpers
+      setTokenWithExpiry(token, 30, user); // Store token and user
       navigate('/', { replace: true });
     } catch (error) {
-      setError(error.response?.data?.error || 'Invalid login credentials. Please try again.');
+      setError(error?.response?.data?.error || 'Invalid login credentials. Please try again.');
     }
   };
 
