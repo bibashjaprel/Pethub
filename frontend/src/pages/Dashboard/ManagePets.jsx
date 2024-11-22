@@ -1,5 +1,17 @@
-import React, { useEffect, useState } from 'react'; 
-import { Box, Typography, Button, TextField, Snackbar } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import {
+  Box,
+  Typography,
+  Button,
+  TextField,
+  Snackbar,
+  Alert,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -10,6 +22,10 @@ const ManagePets = () => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [deletePetId, setDeletePetId] = useState(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [undoPet, setUndoPet] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,19 +59,33 @@ const ManagePets = () => {
     fetchPets();
   }, []);
 
-  const handleDeletePet = async (petId) => {
+  const handleDeletePet = async () => {
+    const petToDelete = pets.find((pet) => pet._id === deletePetId);
+    setUndoPet(petToDelete);
+
+    setPets((prevPets) => prevPets.filter((pet) => pet._id !== deletePetId));
+    setShowDeleteDialog(false);
+    setSnackbarOpen(true);
+
     try {
       const token = localStorage.getItem('authToken');
       axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
-      await axios.delete(`/api/v1/pets/${petId}`, {
-        headers: { Authorization: `Bearer ${token}` }
+      await axios.delete(`/api/v1/pets/${deletePetId}`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      setPets((prevPets) => prevPets.filter(pet => pet._id !== petId));
       setSuccessMessage('Pet deleted successfully.');
     } catch (err) {
-      console.log(err)
+      console.error(err);
       setError('Failed to delete pet');
     }
+  };
+
+  const undoDelete = () => {
+    if (undoPet) {
+      setPets((prevPets) => [...prevPets, undoPet]);
+      setUndoPet(null);
+    }
+    setSnackbarOpen(false);
   };
 
   const handleAddPet = () => {
@@ -69,10 +99,20 @@ const ManagePets = () => {
   const handleCloseSnackbar = () => {
     setError(null);
     setSuccessMessage(null);
+    setSnackbarOpen(false);
   };
 
-  // Filter pets based on name, ID, or donor name
-  const filteredPets = pets.filter(pet => {
+  const handleOpenDeleteDialog = (petId) => {
+    setDeletePetId(petId);
+    setShowDeleteDialog(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setShowDeleteDialog(false);
+    setDeletePetId(null);
+  };
+
+  const filteredPets = pets.filter((pet) => {
     const donorName = pet.doner ? `${pet.doner.firstname} ${pet.doner.lastname}` : '';
     return (
       pet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -116,7 +156,11 @@ const ManagePets = () => {
           <Button variant="outlined" color="warning" onClick={() => navigate(`/admin/dashboard/pets/edit/${params.id}`)}>
             Edit
           </Button>
-          <Button variant="outlined" color="error" onClick={() => handleDeletePet(params.id)}>
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => handleOpenDeleteDialog(params.id)}
+          >
             Delete
           </Button>
         </div>
@@ -129,54 +173,68 @@ const ManagePets = () => {
       <Typography variant="h4" gutterBottom>
         Manage Pets
       </Typography>
-      <Box display="flex" justifyContent="flex-end" mb={2}>
-        <TextField 
-          label="Search by Name, ID, or Donor" 
-          variant="outlined" 
-          size="small" 
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <TextField
+          label="Search by Name, ID, or Donor"
+          variant="outlined"
+          size="small"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{ mr: 1 }} 
         />
-        <Button variant="contained" onClick={handleClearSearch} size="small">
-          Clear
-        </Button>
-      </Box>
-      <div style={{ height: 400, width: '100%' }}>
-        <DataGrid 
-          rows={filteredPets}
-          columns={columns}
-          pageSize={5} 
-          rowsPerPageOptions={[5]} 
-          disableSelectionOnClick 
-          getRowId={(row) => row._id} 
-        />
-      </div>
-      <Box display="flex" justifyContent="flex-end" mt={2}>
         <Button variant="contained" color="primary" onClick={handleAddPet}>
           Add New Pet
         </Button>
       </Box>
-
-      {/* Snackbar for error handling */}
-      {error && (
-        <Snackbar
-          open={Boolean(error)}
-          autoHideDuration={6000}
-          message={error}
-          onClose={handleCloseSnackbar}
+      <div style={{ height: 400, width: '100%' }}>
+        <DataGrid
+          rows={filteredPets}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          getRowId={(row) => row._id}
         />
-      )}
+      </div>
 
-      {/* Snackbar for success message */}
-      {successMessage && (
-        <Snackbar
-          open={Boolean(successMessage)}
-          autoHideDuration={6000}
-          message={successMessage}
+      {/* Snackbar for success or undo */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert
           onClose={handleCloseSnackbar}
-        />
-      )}
+          severity="success"
+          action={
+            undoPet && (
+              <Button color="inherit" size="small" onClick={undoDelete}>
+                UNDO
+              </Button>
+            )
+          }
+        >
+          Pet deleted successfully.
+        </Alert>
+      </Snackbar>
+
+      {/* Delete confirmation dialog */}
+      <Dialog open={showDeleteDialog} onClose={handleCloseDeleteDialog}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this pet? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeletePet} color="error" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

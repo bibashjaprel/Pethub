@@ -10,12 +10,14 @@ function ViewDonateRequests() {
   const [successMessage, setSuccessMessage] = useState(null);
 
   const fetchData = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const token = localStorage.getItem('authToken');
       const response = await axios.get('/api/v1/pets/pending', {
-        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
+        baseURL: 'https://pethub-backend-3te5.onrender.com',
+        headers: { Authorization: `Bearer ${token}` },
       });
+
       const formattedData = response.data.map((item) => ({
         id: item._id,
         petName: item.name,
@@ -29,8 +31,7 @@ function ViewDonateRequests() {
       }));
       setRows(formattedData);
     } catch (error) {
-      console.error('Error fetching adoption requests:', error);
-      setError('Failed to fetch adoption requests.');
+      setError('Failed to fetch donation requests.');
     } finally {
       setLoading(false);
     }
@@ -42,28 +43,25 @@ function ViewDonateRequests() {
 
   const handleUpdateStatus = async (row) => {
     const newStatus = 'available';
+    const token = localStorage.getItem('authToken');
 
     try {
       setRows((prevRows) =>
         prevRows.map((r) => (r.id === row.id ? { ...r, status: newStatus } : r))
       );
 
-      await axios.put(`/api/v1/pets/pending/${row.id}`,{ status: newStatus },{
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-          },
+      await axios.put(
+        `/api/v1/pets/pending/${row.id}`,
+        { status: newStatus },
+        {
+          baseURL: 'https://pethub-backend-3te5.onrender.com',
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
-      
-      // Re-fetch to ensure data consistency
-      fetchData();
 
       setSuccessMessage('Pet status updated successfully.');
     } catch (error) {
-      console.error('Error updating status:', error.response?.data?.error || error.message);
       setError('Failed to update pet status.');
-      // Revert UI in case of error
       setRows((prevRows) =>
         prevRows.map((r) => (r.id === row.id ? { ...r, status: row.status } : r))
       );
@@ -101,7 +99,7 @@ function ViewDonateRequests() {
           onClick={() => handleUpdateStatus(params.row)}
           disabled={params.row.status === 'available'}
         >
-          Update Status
+          Approve
         </Button>
       ),
     },
@@ -120,23 +118,17 @@ function ViewDonateRequests() {
         checkboxSelection
       />
 
-      {/* Snackbar for error handling */}
-      {error && (
-        <Snackbar open autoHideDuration={6000} onClose={handleCloseSnackbar}>
-          <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
-            {error}
-          </Alert>
-        </Snackbar>
-      )}
+      <Snackbar open={!!error} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+          {error}
+        </Alert>
+      </Snackbar>
 
-      {/* Snackbar for success message */}
-      {successMessage && (
-        <Snackbar open autoHideDuration={6000} onClose={handleCloseSnackbar}>
-          <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
-            {successMessage}
-          </Alert>
-        </Snackbar>
-      )}
+      <Snackbar open={!!successMessage} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+          {successMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

@@ -42,6 +42,7 @@
       const fetchPet = async () => {
         try {
           const token = localStorage.getItem('authToken');
+          axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
           const response = await axios.get(`/api/v1/pets/${id}`, {
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
           });

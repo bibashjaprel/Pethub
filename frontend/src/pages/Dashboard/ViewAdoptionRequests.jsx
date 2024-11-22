@@ -21,15 +21,16 @@ function ViewAdoptionRequests() {
       // Map response data to match DataGrid columns
       const formattedData = response.data.map((item) => ({
         id: item._id,
-        name: item.pet.name,
-        species: item.pet.species,
-        breed: item.pet.breed,
-        age: item.pet.age,
-        status: item.status,
-        donorName: `${item.user.firstname} ${item.user.lastname} `,
-        description: item.message,
-        image: item.pet.image,
+        name: item.pet?.name || 'N/A', // Safely access name
+        species: item.pet?.species || 'N/A',
+        breed: item.pet?.breed || 'N/A',
+        age: item.pet?.age || 'N/A',
+        status: item.status || 'N/A',
+        donorName: item.user ? `${item.user.firstname} ${item.user.lastname}` : 'Unknown',
+        description: item.message || 'No message',
+        image: item.pet?.image || '', // Provide a default if image is missing
       }));
+      
 
       setRows(formattedData);
     } catch (error) {
@@ -54,6 +55,7 @@ function ViewAdoptionRequests() {
       );
 
       // Send the update request to the backend
+      axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
       await axios.patch(`/api/v1/pets/${row.id}`, {
         status: newStatus,
       }, {
@@ -62,6 +64,7 @@ function ViewAdoptionRequests() {
           Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },
       });
+
 
       // Re-fetch the data to ensure the data stays consistent
       fetchData();
