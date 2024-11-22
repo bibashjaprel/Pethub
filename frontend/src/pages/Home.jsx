@@ -4,46 +4,29 @@ import { Link } from 'react-router-dom';
 import Carousel from 'react-material-ui-carousel';
 import PetsIcon from '@mui/icons-material/Pets';
 import bannerImage from '../assets/banner2.jpg';
-import axios from 'axios';
+import { fetchRecentPets } from '../utils/apiHelpers';
 
 const Home = () => {
   const [recentPets, setRecentPets] = useState([]);
 
   useEffect(() => {
-    const fetchRecentPets = async () => {
+    const loadRecentPets = async () => {
       try {
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-          console.error('Auth token not found in localStorage');
-          setRecentPets([]);
-          return;
-        }
-        axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
-        const response = await axios.get('/api/v1/pets/availabe/', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        // Debugging: Log the response data
-        console.log('API Response:', response.data);
-
-        // Ensure response data is an array
-        setRecentPets(Array.isArray(response.data) ? response.data : []);
+        const pets = await fetchRecentPets();
+        setRecentPets(pets);
       } catch (error) {
-        console.error('Error fetching recent pets:', error);
-        setRecentPets([]); // Fallback to empty array on error
+        console.error('Error loading recent pets:', error.message);
       }
     };
 
-    fetchRecentPets();
+    loadRecentPets();
   }, []);
 
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
       <Container maxWidth="lg">
         {/* Banner Section */}
-        <Box 
+        <Box
           sx={{
             textAlign: 'center',
             py: 6,
@@ -62,11 +45,11 @@ const Home = () => {
             PetHub
           </Typography>
           <Typography variant="h6">Find your perfect pet companion today!</Typography>
-          <Button 
-            variant="contained" 
-            color="primary" 
-            size="large" 
-            component={Link} 
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            component={Link}
             to="/all-pets"
             sx={{ mt: 4 }}
           >
@@ -85,7 +68,7 @@ const Home = () => {
                 <Card key={pet._id} sx={{ display: 'flex', alignItems: 'center', p: 2, m: 2 }}>
                   <CardMedia
                     component="img"
-                    image={pet.image || 'https://cdn.pixabay.com/photo/2023/10/01/12/56/shih-tzu-8287355_960_720.jpg'}
+                    image={pet.image || 'https://via.placeholder.com/200'}
                     alt={pet.name}
                     sx={{ width: 200, borderRadius: 2 }}
                   />
@@ -114,56 +97,21 @@ const Home = () => {
 
         {/* Features Section */}
         <Grid container spacing={4}>
-          <Grid item xs={12} sm={4}>
-            <Paper sx={{ textAlign: 'center', p: 4, borderRadius: 2, boxShadow: 2 }}>
-              <Typography variant="h5" gutterBottom>Adopt a Pet</Typography>
-              <Typography color="textSecondary" paragraph>
-                Browse through our list of pets available for adoption.
-              </Typography>
-              <Button 
-                variant="outlined" 
-                color="primary" 
-                component={Link} 
-                to="/all-pets"
-              >
-                Explore Pets
-              </Button>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <Paper sx={{ textAlign: 'center', p: 4, borderRadius: 2, boxShadow: 2 }}>
-              <Typography variant="h5" gutterBottom>Donate</Typography>
-              <Typography color="textSecondary" paragraph>
-                Help us continue our work by donating today.
-              </Typography>
-              <Button 
-                variant="outlined" 
-                color="primary" 
-                component={Link} 
-                to="/donatepet"
-              >
-                Donate Now
-              </Button>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <Paper sx={{ textAlign: 'center', p: 4, borderRadius: 2, boxShadow: 2 }}>
-              <Typography variant="h5" gutterBottom>Contact Us</Typography>
-              <Typography color="textSecondary" paragraph>
-                Get in touch with us if you have any questions or concerns.
-              </Typography>
-              <Button 
-                variant="outlined" 
-                color="primary" 
-                component={Link} 
-                to="/contact"
-              >
-                Contact Us
-              </Button>
-            </Paper>
-          </Grid>
+          {[
+            { title: 'Adopt a Pet', text: 'Browse through our list of pets available for adoption.', link: '/all-pets', button: 'Explore Pets' },
+            { title: 'Donate', text: 'Help us continue our work by donating today.', link: '/donatepet', button: 'Donate Now' },
+            { title: 'Contact Us', text: 'Get in touch with us if you have any questions or concerns.', link: '/contact', button: 'Contact Us' },
+          ].map(({ title, text, link, button }, index) => (
+            <Grid item xs={12} sm={4} key={index}>
+              <Paper sx={{ textAlign: 'center', p: 4, borderRadius: 2, boxShadow: 2 }}>
+                <Typography variant="h5" gutterBottom>{title}</Typography>
+                <Typography color="textSecondary" paragraph>{text}</Typography>
+                <Button variant="outlined" color="primary" component={Link} to={link}>
+                  {button}
+                </Button>
+              </Paper>
+            </Grid>
+          ))}
         </Grid>
       </Container>
     </Box>
