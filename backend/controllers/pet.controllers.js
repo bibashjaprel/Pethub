@@ -155,16 +155,43 @@ const updatePet = async (req, res) => {
 
     }
 
-    const updatedPet = await Pet.findOneAndUpdate({ _id: id }, {
-      ...req.body,
-      image: imageUrl,
-    }, { new: true });
-
-    res.status(200).json(updatedPet);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to update pet' });
-  }
-};
+    const updatePet = async (req, res) => {
+      const { id } = req.params;
+    
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'Invalid pet ID' });
+      }
+    
+      try {
+        const pet = await Pet.findById(id);
+    
+        if (!pet) {
+          return res.status(404).json({ error: 'No such pet' });
+        }
+    
+        let imageUrl = pet.image; // Default to the existing image URL
+        if (req.file) {
+          // If a new image is uploaded, upload it to Cloudinary
+          const result = await cloudinary.uploader.upload(req.file.path, {
+            folder: 'pets',
+            width: 500,
+            height: 500,
+            crop: 'fill',
+          });
+          imageUrl = result.secure_url;
+        }
+    
+        const updatedPet = await Pet.findOneAndUpdate({ _id: id }, {
+          ...req.body,
+          image: imageUrl,
+        }, { new: true });
+    
+        res.status(200).json(updatedPet);
+      } catch (error) {
+        res.status(500).json({ error: 'Failed to update pet' });
+      }
+    };
+    
 
 module.exports = {
   getPets,
