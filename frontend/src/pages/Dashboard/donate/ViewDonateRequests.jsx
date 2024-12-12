@@ -13,8 +13,8 @@ function ViewDonateRequests() {
     setLoading(true);
     try {
       const token = localStorage.getItem('authToken');
+      axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
       const response = await axios.get('/api/v1/pets/pending', {
-        baseURL: 'https://pethub-backend-3te5.onrender.com',
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -25,12 +25,13 @@ function ViewDonateRequests() {
         breed: item.breed,
         age: item.age,
         status: item.status,
-        donorName: `${item.doner.firstname} ${item.doner.lastname}`,
+        donorName: item.user ? `${item.user.firstname} ${item.user.lastname}` : 'Unknown',
         description: item.description,
         image: item.image,
       }));
       setRows(formattedData);
     } catch (error) {
+      console.error(error);
       setError('Failed to fetch donation requests.');
     } finally {
       setLoading(false);
@@ -49,12 +50,11 @@ function ViewDonateRequests() {
       setRows((prevRows) =>
         prevRows.map((r) => (r.id === row.id ? { ...r, status: newStatus } : r))
       );
-
+      axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
       await axios.put(
         `/api/v1/pets/pending/${row.id}`,
         { status: newStatus },
         {
-          baseURL: 'https://pethub-backend-3te5.onrender.com',
           headers: { Authorization: `Bearer ${token}` },
         }
       );

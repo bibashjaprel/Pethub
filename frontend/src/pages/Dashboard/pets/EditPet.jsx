@@ -25,7 +25,6 @@ const EditPet = () => {
     const fetchPetData = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
         const response = await axios.get(`/api/v1/pets/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -68,21 +67,19 @@ const EditPet = () => {
       formData.append('description', pet.description);
       formData.append('status', pet.status);
       formData.append('doner', pet.doner);
+
       if (imageFile) {
         formData.append('image', imageFile);
       }
 
       const token = localStorage.getItem('authToken');
-      const response = await axios.put(`/api/v1/pets/${id}`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
+      const response = await axios.patch(`/api/v1/pets/${id}`, formData, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.status === 200) {
         setSuccessMessage('Pet updated successfully!');
-        navigate('/pets');
+        navigate('/all-pets');
       }
     } catch (err) {
       setError('Failed to update pet');
