@@ -4,12 +4,10 @@ import {
   CardContent,
   Typography,
   Grid,
-  CircularProgress,
   Divider,
   Box,
   LinearProgress,
   Skeleton,
-  Tooltip,
 } from '@mui/material';
 import { Pets as PetsIcon, Person as PersonIcon, ThumbUp as ThumbUpIcon, CardGiftcard as CardGiftcardIcon, PendingActions as PendingActionsIcon } from '@mui/icons-material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
