@@ -57,7 +57,7 @@ const Navbar = () => {
         { text: 'Adopt', path: '/all-pets' },
         { text: 'Donate', path: '/donatepet' },
         { text: 'Contact Us', path: '/contact' },
-        { text: 'Login', path: '/login' },
+        // { text: 'Login', path: '/login' },
       ]);
     }
   }, [isLoggedIn, role]);
