@@ -56,7 +56,7 @@ function ViewAdoptionRequests() {
 
       // Send the update request to the backend
       axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
-      await axios.patch(`/api/v1/pets/${row.id}`, {
+      await axios.patch(`/api/v1/adoption/${row.id}`, {
         status: newStatus,
       }, {
         headers: {
@@ -73,7 +73,7 @@ function ViewAdoptionRequests() {
       setSuccessMessage('Adoption request approved successfully.');
     } catch (error) {
       console.error('Error updating status:', error.response?.data?.error || error.message);
-
+      console.log(error)
       // Revert UI in case of error
       setRows((prevRows) =>
         prevRows.map((r) => (r.id === row.id ? { ...r, status: row.status } : r))
