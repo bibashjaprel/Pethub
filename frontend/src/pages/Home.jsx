@@ -29,29 +29,32 @@ const Home = () => {
         <Box
           sx={{
             textAlign: 'center',
-            py: 6,
+            py: { xs: 4, sm: 6 },
             backgroundImage: `url(${bannerImage})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             borderRadius: 2,
             mb: 6,
             color: 'white',
+            boxShadow: 4,
           }}
         >
-          <Avatar sx={{ bgcolor: 'primary.main', mx: 'auto', width: 80, height: 80 }}>
+          <Avatar sx={{ bgcolor: 'primary.main', mx: 'auto', width: 100, height: 100 }}>
             <PetsIcon fontSize="large" />
           </Avatar>
-          <Typography variant="h2" component="h1" sx={{ fontWeight: 'bold', mt: 2, mb: 1 }}>
+          <Typography variant="h3" component="h1" sx={{ fontWeight: 'bold', mt: 2, mb: 1 }}>
             PetHub
           </Typography>
-          <Typography variant="h6">Find your perfect pet companion today!</Typography>
+          <Typography variant="h6" sx={{ mb: 3 }}>
+            Find your perfect pet companion today!
+          </Typography>
           <Button
             variant="contained"
             color="primary"
             size="large"
             component={Link}
             to="/all-pets"
-            sx={{ mt: 4 }}
+            sx={{ mt: 4, paddingX: 4 }}
           >
             Adopt a Pet
           </Button>
@@ -65,12 +68,12 @@ const Home = () => {
           {Array.isArray(recentPets) && recentPets.length > 0 ? (
             <Carousel animation="slide" interval={3000} indicators={false} navButtonsAlwaysVisible>
               {recentPets.map((pet) => (
-                <Card key={pet._id} sx={{ display: 'flex', alignItems: 'center', p: 2, m: 2 }}>
+                <Card key={pet._id} sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', p: 2, m: 2, borderRadius: 2, boxShadow: 2 }}>
                   <CardMedia
                     component="img"
                     image={pet.image || 'https://via.placeholder.com/200'}
                     alt={pet.name}
-                    sx={{ width: 200, borderRadius: 2 }}
+                    sx={{ width: { xs: '100%', sm: 200 }, borderRadius: 2 }}
                   />
                   <CardContent sx={{ flex: 1 }}>
                     <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{pet.name}</Typography>
@@ -106,7 +109,7 @@ const Home = () => {
               <Paper sx={{ textAlign: 'center', p: 4, borderRadius: 2, boxShadow: 2 }}>
                 <Typography variant="h5" gutterBottom>{title}</Typography>
                 <Typography color="textSecondary" paragraph>{text}</Typography>
-                <Button variant="outlined" color="primary" component={Link} to={link}>
+                <Button variant="outlined" color="primary" component={Link} to={link} sx={{ mt: 2 }}>
                   {button}
                 </Button>
               </Paper>

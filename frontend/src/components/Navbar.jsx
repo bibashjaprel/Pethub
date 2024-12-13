@@ -28,6 +28,16 @@ const Navbar = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [adoptionRequestsCount, setAdoptionRequestsCount] = useState(0);
 
+  // Fetch adoption requests count for admin role
+  const fetchAdoptionRequests = () => {
+    if (role === 'admin') {
+      getAdoptionRequests()
+        .then((data) => setAdoptionRequestsCount(data.length))
+        .catch((err) => console.error('Failed to fetch adoption requests:', err));
+    }
+  };
+
+  // Dynamically set menu items based on authentication and user role
   useEffect(() => {
     if (isLoggedIn) {
       const newMenuItems = [
@@ -35,45 +45,35 @@ const Navbar = () => {
         { text: 'Adopt', path: '/all-pets' },
         { text: 'Donate', path: '/donatepet' },
         { text: 'Contact Us', path: '/contact' },
+        { text: 'My Requests', path: '/user/requests/' },
       ];
 
       if (role === 'admin') {
         newMenuItems.push({ text: 'Dashboard', path: '/admin/v1/dashboard' });
+        fetchAdoptionRequests(); // Only fetch for admin role
       }
 
       setMenuItems(newMenuItems);
-
-      // Fetch adoption requests count for admin role
-      if (role === 'admin') {
-        getAdoptionRequests()
-          .then((data) => {
-            setAdoptionRequestsCount(data.length); // Assuming the response is an array of requests
-          })
-          .catch((err) => console.error('Failed to fetch adoption requests:', err));
-      }
     } else {
       setMenuItems([
         { text: 'Home', path: '/' },
         { text: 'Adopt', path: '/all-pets' },
         { text: 'Donate', path: '/donatepet' },
         { text: 'Contact Us', path: '/contact' },
-        // { text: 'Login', path: '/login' },
       ]);
     }
   }, [isLoggedIn, role]);
 
-  const toggleDrawer = (open) => () => {
-    setDrawerOpen(open);
-  };
+  useEffect(() => {
+    setActiveLink(location.pathname);
+  }, [location]);
+
+  const toggleDrawer = (open) => () => setDrawerOpen(open);
 
   const handleLogout = () => {
     clearToken();
     navigate('/');
   };
-
-  useEffect(() => {
-    setActiveLink(location.pathname);
-  }, [location]);
 
   return (
     <AppBar position="static" color="default">
@@ -122,26 +122,26 @@ const Navbar = () => {
             </Button>
           ) : (
             <>
+              {role === 'admin' && adoptionRequestsCount > 0 && (
+                <Button
+                  component={Link}
+                  to="/user/requests/"
+                  sx={{
+                    marginLeft: 2,
+                    backgroundColor: 'white',
+                    '&:hover': { backgroundColor: 'darkred' },
+                  }}
+                >
+                  {`Alert (${adoptionRequestsCount})`}
+                </Button>
+              )}
+
               <Typography variant="body1" sx={{ mx: 1 }}>
                 Welcome,{' '}
                 <Typography component="span" sx={{ color: 'blue' }}>
                   {user?.firstname || 'User'} {user?.lastname}
                 </Typography>
               </Typography>
-
-              {role === 'admin' && adoptionRequestsCount > 0 && (
-                <Button
-                  component={Link}
-                  to="/admin/v1/dashboard"
-                  sx={{
-                    marginLeft: 2,
-                    backgroundColor: 'red',
-                    '&:hover': { backgroundColor: 'darkred' },
-                  }}
-                >
-                  {`Adoption Requests (${adoptionRequestsCount})`}
-                </Button>
-              )}
 
               <Button
                 variant="outlined"

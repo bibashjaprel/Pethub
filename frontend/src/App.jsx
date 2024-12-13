@@ -11,7 +11,8 @@ import Home from './pages/Home';
 import DonatePet from './pages/Dashboard/donate/DonatePetForm';
 import Footer from './components/Footer';
 import UnauthorizedPage from './components/UnauthorizedPage';
-import Editpage from './pages/Dashboard/pets/EditPet'
+import Editpage from './pages/Dashboard/pets/EditPet';
+import MyRequest from './pages/MyRequest';
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/admin/dashboard/pets/edit/:id" element={<Editpage />} />
+        <Route path="/user/requests/" element={<MyRequest />} />
         <Route path="*" element={<UnauthorizedPage />} />
       </Routes>
       <Footer />
