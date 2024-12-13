@@ -20,10 +20,11 @@ axios.interceptors.request.use(
 // Handle API responses
 const handleResponse = (response) => response.data;
 
-// Handle API errors
+// Handle API errors with better user feedback
 const handleError = (error) => {
-  console.error('API Error:', error?.response?.data || error.message);
-  throw error;
+  const errorMessage = error?.response?.data?.error || error.message || 'An unexpected error occurred';
+  console.error('API Error:', errorMessage);
+  throw new Error(errorMessage);
 };
 
 // Helper function for GET requests
@@ -69,5 +70,8 @@ export const getPet = async () => apiGet('/api/v1/pets');
 export const deletePet = async (petId) => apiDelete(`/api/v1/pets/${petId}`);
 
 // Adoption APIs
-export const getAdoptionRequests = async () => apiGet('/api/adoption-requests');
+export const getAdoptionRequests = async () => apiGet('/api/v1/adoption');
 export const getAdoptionApplications = async () => apiGet('/api/adoption-applications');
+
+// Cart request (My adoption and donation requests)
+export const getAdopMyrequest = async () => apiGet('/api/v1/adoption');
