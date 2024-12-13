@@ -129,6 +129,7 @@ const Navbar = () => {
                   sx={{
                     marginLeft: 2,
                     backgroundColor: 'white',
+                    width: '250px',
                     '&:hover': { backgroundColor: 'darkred' },
                   }}
                 >
@@ -166,8 +167,16 @@ const Navbar = () => {
         </IconButton>
       </Toolbar>
 
-      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-        <List>
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={toggleDrawer(false)}
+        sx={{ width: 250 }}
+      >
+        <Box sx={{ padding: '20px', backgroundColor: '#1976d2', color: 'white' }}>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>PetHub Menu</Typography>
+        </Box>
+        <List sx={{ width: '250px' }}>
           {menuItems.map((item) => (
             <ListItem button key={item.text} component={Link} to={item.path} onClick={toggleDrawer(false)}>
               <ListItemText primary={item.text} />
@@ -179,7 +188,8 @@ const Navbar = () => {
             </ListItem>
           )}
         </List>
-      </Drawer>
+    </Drawer>
+      
     </AppBar>
   );
 };
