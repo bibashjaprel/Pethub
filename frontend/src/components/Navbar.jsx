@@ -57,9 +57,12 @@ const Navbar = () => {
     } else {
       setMenuItems([
         { text: 'Home', path: '/' },
-        { text: 'Adopt', path: '/all-pets' },
-        { text: 'Donate', path: '/donatepet' },
+        { text: 'Adopt Pets', path: '/all-pets' },
+        { text: 'Donate Pets', path: '/donatepet' },
+        { text: 'My Requests', path: '/user/requests/' },
         { text: 'Contact Us', path: '/contact' },
+        { text: 'Sign In', path: '/login/' },
+
       ]);
     }
   }, [isLoggedIn, role]);

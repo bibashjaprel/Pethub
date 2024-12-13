@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   Box,
   Container,
@@ -127,9 +128,18 @@ const AboutUs = () => {
             Whether you’re looking to adopt a pet, volunteer, or donate, there are many ways to help our cause. 
             Together, we can create a better world for animals.
           </Typography>
-          <Button variant="contained" color="primary" size="large" startIcon={<People />}>
-            Get Involved
-          </Button>
+
+          <Button
+            component={Link}
+            to="https://github.com/bibashjaprel/Pethub"
+            variant="contained"
+            color="primary"
+            size="large"
+            startIcon={<People />}
+            target="_blank" // Open in a new tab
+            >
+          Get Involved
+        </Button>
         </Container>
       </Section>
     </Box>
