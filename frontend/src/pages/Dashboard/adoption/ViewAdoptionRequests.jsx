@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { Box, Typography, Button, Snackbar, Alert } from '@mui/material';
+import { getAdoptionRequests } from '../../../utils/apiHelpers'; // Import the API helper functions
 import axios from 'axios';
 
 function ViewAdoptionRequests() {
@@ -9,81 +10,62 @@ function ViewAdoptionRequests() {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
-  const fetchData = async () => {
+  // Fetch adoption requests
+  const fetchAdoptionRequests = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('authToken');
-      axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
-      const response = await axios.get('/api/v1/adoption/', {
-        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
-      });
-
-      // Map response data to match DataGrid columns
-      const formattedData = response.data.map((item) => ({
+      const data = await getAdoptionRequests();
+      const formattedData = data.map((item) => ({
         id: item._id,
-        name: item.pet?.name || 'N/A', // Safely access name
+        name: item.pet?.name || 'N/A',
         species: item.pet?.species || 'N/A',
         breed: item.pet?.breed || 'N/A',
         age: item.pet?.age || 'N/A',
         status: item.status || 'N/A',
-        donorName: item.user ? `${item.user.firstname} ${item.user.lastname}` : 'Unknown',
+        // adopterNamw: item.user ? `${item.user.firstname} ${item.user.lastname}` : 'Unknown',
+        adopterName: item.user ? `${item.user.firstname} ${item.user.lastname}` : 'Unknown',
         description: item.message || 'No message',
-        image: item.pet?.image || '', // Provide a default if image is missing
+        image: item.pet?.image || '',
       }));
-      
-
       setRows(formattedData);
     } catch (error) {
       console.error('Error fetching adoption requests:', error);
-      setError('Failed to fetch adoption requests.');
+      setError('Failed to fetch adoption requests. Please try again later.');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchData();
+    fetchAdoptionRequests();
   }, []);
 
+  // Handle adoption request approval
   const handleApproveStatus = async (row) => {
     const newStatus = 'approved';
 
     try {
-      // Optimistically update the status in the UI
       setRows((prevRows) =>
         prevRows.map((r) => (r.id === row.id ? { ...r, status: newStatus } : r))
       );
 
-      // Send the update request to the backend
-      axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
-      await axios.patch(`/api/v1/adoption/${row.id}`, {
-        status: newStatus,
-      }, {
+      await axios.patch(`/api/v1/adoption/${row.id}`, { status: newStatus }, {
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },
       });
 
-
-      // Re-fetch the data to ensure the data stays consistent
-      fetchData();
-
-      // Show success message
-      setSuccessMessage('Adoption request approved successfully.');
+      fetchAdoptionRequests();
+      setSuccessMessage('Adoption request approved successfully!');
     } catch (error) {
-      console.error('Error updating status:', error.response?.data?.error || error.message);
-      console.log(error)
-      // Revert UI in case of error
       setRows((prevRows) =>
         prevRows.map((r) => (r.id === row.id ? { ...r, status: row.status } : r))
       );
-
-      // Show error message
-      setError('Failed to approve adoption request.');
+      setError('Failed to approve adoption request. Please try again later.');
     }
   };
 
+  // Close the Snackbar
   const handleCloseSnackbar = () => {
     setError(null);
     setSuccessMessage(null);
@@ -95,9 +77,8 @@ function ViewAdoptionRequests() {
     { field: 'species', headerName: 'Species', width: 120 },
     { field: 'breed', headerName: 'Breed', width: 120 },
     { field: 'age', headerName: 'Age', width: 100 },
-    { field: 'donorName', headerName: 'Donor Name', width: 200 },
+    { field: 'adopterName', headerName: 'Requested By', width: 200 },
     { field: 'description', headerName: 'Message', width: 200 },
-    
     {
       field: 'status',
       headerName: 'Status',
@@ -134,7 +115,6 @@ function ViewAdoptionRequests() {
         checkboxSelection
       />
 
-      {/* Snackbar for error handling */}
       {error && (
         <Snackbar open autoHideDuration={6000} onClose={handleCloseSnackbar}>
           <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
@@ -143,7 +123,6 @@ function ViewAdoptionRequests() {
         </Snackbar>
       )}
 
-      {/* Snackbar for success message */}
       {successMessage && (
         <Snackbar open autoHideDuration={6000} onClose={handleCloseSnackbar}>
           <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
