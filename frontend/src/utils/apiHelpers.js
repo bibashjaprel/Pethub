@@ -1,7 +1,7 @@
 import axios from 'axios';
 
+// const BASE_URL = 'http://localhost:5000/';
 const BASE_URL = 'https://pethub-backend-3te5.onrender.com';
-
 // Set default configurations for axios
 axios.defaults.baseURL = BASE_URL;
 
@@ -66,12 +66,19 @@ export const deleteUser = async (userId) => apiDelete(`/api/v1/user/delete/${use
 
 // Pet APIs
 export const fetchRecentPets = async () => apiGet('/api/v1/pets/availabe/');
-export const getPet = async () => apiGet('/api/v1/pets');
+export const getPet = async (petId) => apiGet(`/api/v1/pets/${petId}`);  // Fetch a specific pet
 export const deletePet = async (petId) => apiDelete(`/api/v1/pets/${petId}`);
 
 // Adoption APIs
+
+// Get all adoption requests
 export const getAdoptionRequests = async () => apiGet('/api/v1/adoption');
+
+// Create an adoption request
+export const createAdoptionRequest = async (adoptionData) => apiPost('/api/v1/adoption', adoptionData);
+
+// Get all adoption applications
 export const getAdoptionApplications = async () => apiGet('/api/adoption-applications');
 
-// Cart request (My adoption and donation requests)
-export const getAdopMyrequest = async () => apiGet('/api/v1/adoption');
+// Cart request (My adoption requests)
+export const getMyAdoptionRequest = async () => apiGet('/api/v1/adoption/user/my-request');
