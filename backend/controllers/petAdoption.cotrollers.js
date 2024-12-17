@@ -6,7 +6,7 @@ const getAdoptionRequests = async (req, res) => {
   try {
     // Fetch all adoption requests and populate user and pet data
     const adoptionRequests = await AdoptionRequest.find().populate('user pet');
-    
+
     // Send successful response with data
     res.status(200).json(adoptionRequests);
   } catch (error) {
@@ -137,10 +137,28 @@ const updateAdoptionRequest = async (req, res) => {
   }
 };
 
+// get user adoption only
+const getMyAdoptionRequest = async (req, res) => {
+  try {
+    const userId = req.user._id; // Extract userId from the authenticated user token
+    console.log("Logged-in User ID:", userId);
+
+    // Filter requests by userId
+    const myAdoptionRequests = await AdoptionRequest.find({ user: userId }) // Filter the user field
+      .populate('user pet'); // Populate user and pet references
+
+    res.status(200).json(myAdoptionRequests);
+  } catch (error) {
+    console.error('Bibash, error here fetching adoption requests:', error);
+    res.status(500).json({ error: 'Failed to fetch adoption requests' });
+  }
+};
+
 module.exports = {
   getAdoptionRequests,
   getAdoptionRequest,
   createAdoptionRequest,
   deleteAdoptionRequest,
   updateAdoptionRequest,
+  getMyAdoptionRequest,
 };

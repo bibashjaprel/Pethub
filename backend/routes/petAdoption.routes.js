@@ -6,8 +6,11 @@ const {
   getAdoptionRequest,
   createAdoptionRequest,
   deleteAdoptionRequest,
-  updateAdoptionRequest
-} = require('../controllers/petAdoption.controllers');
+  updateAdoptionRequest,
+  getMyAdoptionRequest
+} = require('../controllers/petAdoption.cotrollers');
+
+const authMiddleware = require('../middlewares/authMiddleware');
 
 // Get all adoption requests
 router.get('/', getAdoptionRequests);
@@ -23,5 +26,8 @@ router.delete('/:id', deleteAdoptionRequest);
 
 // Update a specific adoption request by ID
 router.patch('/:id', updateAdoptionRequest);
+
+// Get a specific adoption request by ID
+router.get('/user/my-request', authMiddleware, getMyAdoptionRequest);
 
 module.exports = router;
