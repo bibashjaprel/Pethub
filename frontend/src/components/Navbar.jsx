@@ -11,6 +11,9 @@ import {
   ListItem,
   ListItemText,
   Box,
+  Divider,
+  Avatar,
+  Badge,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { isAuthenticated, getUser, clearToken } from '../utils/authHelpers';
@@ -59,10 +62,7 @@ const Navbar = () => {
         { text: 'Home', path: '/' },
         { text: 'Adopt Pets', path: '/all-pets' },
         { text: 'Donate Pets', path: '/donatepet' },
-        { text: 'My Requests', path: '/user/requests/' },
         { text: 'Contact Us', path: '/contact' },
-        { text: 'Sign In', path: '/login/' },
-
       ]);
     }
   }, [isLoggedIn, role]);
@@ -80,8 +80,8 @@ const Navbar = () => {
 
   return (
     <AppBar position="static" color="default">
-      <Toolbar sx={{ justifyContent: 'space-between' }}>
-        <Typography variant="h6" sx={{ flex: 1, fontFamily: 'cursive', color: 'blue' }}>
+      <Toolbar sx={{ justifyContent: 'space-between', padding: '0 20px' }}>
+        <Typography variant="h6" sx={{ fontFamily: 'cursive', color: 'blue' }}>
           PetHub
         </Typography>
 
@@ -95,6 +95,10 @@ const Navbar = () => {
                 mx: 1,
                 color: 'text.primary',
                 position: 'relative',
+                '&:hover': {
+                  backgroundColor: 'lightgray',
+                  borderRadius: 3,
+                },
                 '&:after': {
                   content: activeLink === item.path ? '""' : 'none',
                   position: 'absolute',
@@ -132,20 +136,24 @@ const Navbar = () => {
                   sx={{
                     marginLeft: 2,
                     backgroundColor: 'white',
-                    width: '250px',
                     '&:hover': { backgroundColor: 'darkred' },
                   }}
                 >
-                  {`Alert (${adoptionRequestsCount})`}
+                  <Badge color="error" badgeContent={adoptionRequestsCount}>
+                    Alert
+                  </Badge>
                 </Button>
               )}
 
-              <Typography variant="body1" sx={{ mx: 1 }}>
-                Welcome,{' '}
-                <Typography component="span" sx={{ color: 'blue' }}>
-                  {user?.firstname || 'User'} {user?.lastname}
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Avatar sx={{ mx: 1 }} />
+                <Typography variant="body1" sx={{ mx: 1 }}>
+                  Welcome,{' '}
+                  <Typography component="span" sx={{ color: 'blue' }}>
+                    {user?.firstname || 'User'} {user?.lastname}
+                  </Typography>
                 </Typography>
-              </Typography>
+              </Box>
 
               <Button
                 variant="outlined"
@@ -186,13 +194,15 @@ const Navbar = () => {
             </ListItem>
           ))}
           {isLoggedIn && (
-            <ListItem button onClick={handleLogout}>
-              <ListItemText primary="Logout" />
-            </ListItem>
+            <>
+              <Divider />
+              <ListItem button onClick={handleLogout}>
+                <ListItemText primary="Logout" />
+              </ListItem>
+            </>
           )}
         </List>
-    </Drawer>
-      
+      </Drawer>
     </AppBar>
   );
 };
