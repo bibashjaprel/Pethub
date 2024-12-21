@@ -41,7 +41,8 @@ const updatePendingPetStatus = async (req, res) => {
     return res.status(400).json({ error: 'Invalid pet ID' });
   }
 
-  if (!['available', 'Pending'].includes(status)) {
+  // Allow 'available', 'Pending', 'approved' status
+  if (!['available', 'Pending', 'approved'].includes(status)) {
     return res.status(400).json({ error: 'Invalid status value' });
   }
 
@@ -55,6 +56,7 @@ const updatePendingPetStatus = async (req, res) => {
     res.status(500).json({ error: 'Failed to update pet status' });
   }
 };
+
 
 // Get single pet
 const getPet = async (req, res) => {
