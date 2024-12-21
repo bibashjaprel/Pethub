@@ -2,8 +2,8 @@ import axios from 'axios';
 
 // const BASE_URL = 'http://localhost:5000/';
 const BASE_URL = 'https://pethub-backend-3te5.onrender.com';
-// Set default configurations for axios
 axios.defaults.baseURL = BASE_URL;
+axios.defaults.timeout = 10000; // Set timeout for requests 
 
 // Add Authorization header to every request if a token exists
 axios.interceptors.request.use(
@@ -79,6 +79,9 @@ export const createAdoptionRequest = async (adoptionData) => apiPost('/api/v1/ad
 
 // Get all adoption applications
 export const getAdoptionApplications = async () => apiGet('/api/adoption-applications');
+
+//Get donate request
+export const getCreateRequests = async () => apiGet('/api/v1/pets/pending');
 
 // Cart request (My adoption requests)
 export const getMyAdoptionRequest = async () => apiGet('/api/v1/adoption/user/my-request');
