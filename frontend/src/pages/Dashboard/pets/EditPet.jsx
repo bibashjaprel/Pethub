@@ -18,6 +18,7 @@ const EditPet = () => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const [preview, setPreview] = useState(null);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -26,17 +27,10 @@ const EditPet = () => {
       try {
         const token = localStorage.getItem('authToken');
         const response = await axios.get(`/api/v1/pets/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
-
-        if (response.status === 200) {
-          setPet(response.data);
-        } else {
-          setError('Failed to fetch pet data');
-        }
-      } catch (err) {
+        setPet(response.data);
+      } catch {
         setError('Error fetching pet data');
       }
     };
@@ -44,53 +38,40 @@ const EditPet = () => {
   }, [id]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setPet({
-      ...pet,
-      [name]: value,
-    });
+    setPet({ ...pet, [e.target.name]: e.target.value });
   };
 
   const handleFileChange = (e) => {
-    setImageFile(e.target.files[0]);
+    const file = e.target.files[0];
+    setImageFile(file);
+    setPreview(URL.createObjectURL(file));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!pet.name || !pet.species || !pet.status) {
+      setError('All fields are required');
+      return;
+    }
+
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append('name', pet.name);
-      formData.append('species', pet.species);
-      formData.append('breed', pet.breed);
-      formData.append('age', pet.age);
-      formData.append('description', pet.description);
-      formData.append('status', pet.status);
-      formData.append('doner', pet.doner);
-
-      if (imageFile) {
-        formData.append('image', imageFile);
-      }
+      Object.entries(pet).forEach(([key, value]) => formData.append(key, value));
+      if (imageFile) formData.append('image', imageFile);
 
       const token = localStorage.getItem('authToken');
       const response = await axios.patch(`/api/v1/pets/${id}`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (response.status === 200) {
-        setSuccessMessage('Pet updated successfully!');
-        navigate('/all-pets');
-      }
-    } catch (err) {
+      setSuccessMessage('Pet updated successfully!');
+      navigate('/all-pets');
+    } catch {
       setError('Failed to update pet');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleCloseSnackbar = () => {
-    setError(null);
-    setSuccessMessage(null);
   };
 
   return (
@@ -98,112 +79,51 @@ const EditPet = () => {
       <Typography variant="h4" gutterBottom>Edit Pet</Typography>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
+          {['name', 'species', 'breed', 'age', 'description'].map((field) => (
+            <Grid item xs={12} sm={6} key={field}>
+              <TextField
+                label={field.charAt(0).toUpperCase() + field.slice(1)}
+                variant="outlined"
+                fullWidth
+                name={field}
+                value={pet[field]}
+                onChange={handleChange}
+              />
+            </Grid>
+          ))}
           <Grid item xs={12} sm={6}>
             <TextField
-              label="Name"
-              variant="outlined"
-              fullWidth
-              name="name"
-              value={pet.name}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Species"
-              variant="outlined"
-              fullWidth
-              name="species"
-              value={pet.species}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Breed"
-              variant="outlined"
-              fullWidth
-              name="breed"
-              value={pet.breed}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Age"
-              variant="outlined"
-              fullWidth
-              name="age"
-              value={pet.age}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              label="Description"
-              variant="outlined"
-              fullWidth
-              name="description"
-              value={pet.description}
-              onChange={handleChange}
-              multiline
-              rows={4}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Input
-              type="file"
-              onChange={handleFileChange}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
+              select
               label="Status"
-              variant="outlined"
-              fullWidth
               name="status"
               value={pet.status}
               onChange={handleChange}
-            />
+              fullWidth
+              SelectProps={{ native: true }}
+            >
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </TextField>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              label="Doner ID"
-              variant="outlined"
-              fullWidth
-              name="doner"
-              value={pet.doner}
-              onChange={handleChange}
-            />
+            <Input type="file" onChange={handleFileChange} fullWidth />
+            {preview && <img src={preview} alt="Preview" width="100" />}
           </Grid>
         </Grid>
-        <Box display="flex" justifyContent="flex-end" mt={2}>
+        <Box mt={2} display="flex" justifyContent="flex-end">
           <Button variant="contained" color="primary" type="submit" disabled={loading}>
             {loading ? 'Updating...' : 'Update Pet'}
           </Button>
         </Box>
       </form>
-
-      {/* Snackbar for error handling */}
-      {error && (
-        <Snackbar
-          open={Boolean(error)}
-          autoHideDuration={6000}
-          message={error}
-          onClose={handleCloseSnackbar}
-        />
-      )}
-
-      {/* Snackbar for success message */}
-      {successMessage && (
-        <Snackbar
-          open={Boolean(successMessage)}
-          autoHideDuration={6000}
-          message={successMessage}
-          onClose={handleCloseSnackbar}
-        />
-      )}
+      <Snackbar
+        open={Boolean(error || successMessage)}
+        autoHideDuration={6000}
+        message={error || successMessage}
+        onClose={() => setError(null) || setSuccessMessage(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
     </Box>
   );
 };
