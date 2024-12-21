@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getUser, deleteUser  } from '../../../utils/apiHelpers'; // Adjust path as necessary
+import { getUser, deleteUser } from '../../../utils/apiHelpers';
 import { DataGrid } from '@mui/x-data-grid';
 import {
   Box,
@@ -146,7 +146,7 @@ const ManageUser = () => {
 
   return (
     <Box sx={{ p: 2 }}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h6" gutterBottom>
         Manage Users
       </Typography>
       <Grid container spacing={2} alignItems="center" mb={2}>
@@ -166,16 +166,18 @@ const ManageUser = () => {
           </Button>
         </Grid>
       </Grid>
-      <Box>
+
+      <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
           rows={filteredUsers}
           columns={columns}
           pageSize={5}
           rowsPerPageOptions={[5, 10, 20]}
           disableSelectionOnClick
-          autoHeight
+          loading={loading}
         />
       </Box>
+
       <Dialog open={confirmationDialog.open} onClose={() => setConfirmationDialog({ open: false, userId: null })}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
@@ -190,6 +192,7 @@ const ManageUser = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
       {notification && (
         <Snackbar open autoHideDuration={3000} onClose={handleCloseNotification}>
           <Alert onClose={handleCloseNotification} severity={notification.type}>
