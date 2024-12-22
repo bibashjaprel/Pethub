@@ -61,16 +61,10 @@ PetHub is a comprehensive pet adoption platform designed to connect pet lovers w
      ```env
      PORT=5000
      MONGO_URI=your_mongodb_connection_string
-     JWT_SECRET=your_jwt_secret
-     CLOUDINARY_NAME=your_cloudinary_cloud_name
+     SECRET=your_jwt_secret
+     CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
      CLOUDINARY_API_KEY=your_cloudinary_api_key
      CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-     MONGO_URI=mongodb+srv://root9t2:9U218ntpHVGRNjCX@cluster0.i1xkw.mongodb.net/
-PORT=5000
-SECRET=SUP3RSECRETPASS00RD
-CLOUDINARY_CLOUD_NAME=dzrahzo3u
-CLOUDINARY_API_KEY=863483184537926
-CLOUDINARY_API_SECRET=QPiu5rioMErlkNeW6ae1BAdbczc
      ```
    - Start the server:
      ```bash
@@ -168,7 +162,7 @@ PetHub/
 
 ## Contributions
 
-Contributions, issues, and feature requests are welcome! Feel free to check out the [issues page](https://github.com/username/pethub/issues).
+Contributions, issues, and feature requests are welcome! Feel free to check out the [issues page](https://github.com/bibashjaprel/pethub/issues).
 
 ---
 
@@ -180,5 +174,5 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Author
 
-Developed by **[Bibash Japrel](https://github.com/username)**. 
+Developed by **[Bibash Japrel](https://github.com/bibashjaprel)**. 
 Feel free to connect with me for any queries or collaborations.
