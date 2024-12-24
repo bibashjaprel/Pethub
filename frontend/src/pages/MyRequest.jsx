@@ -47,7 +47,7 @@ const MyRequest = () => {
   const renderStatus = (status) => {
     console.log("Rendering status for:", status);
     switch (status) {
-      case "pending":
+      case "Pending":
         return <Chip label="Pending" color="warning" />;
       case "approved":
         return <Chip label="Approved" color="success" />;
