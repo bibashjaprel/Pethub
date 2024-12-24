@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Carousel from 'react-material-ui-carousel';
 import PetsIcon from '@mui/icons-material/Pets';
 import bannerImage from '../assets/banner2.jpg';
-import { fetchRecentPets } from '../utils/apiHelpers';
+import { getAvailablePets } from '../utils/apiHelpers';
 
 const Home = () => {
   const [recentPets, setRecentPets] = useState([]);
@@ -12,7 +12,7 @@ const Home = () => {
   useEffect(() => {
     const loadRecentPets = async () => {
       try {
-        const pets = await fetchRecentPets();
+        const pets = await getAvailablePets();
         setRecentPets(pets);
       } catch (error) {
         console.error('Error loading recent pets:', error.message);
