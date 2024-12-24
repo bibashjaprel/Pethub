@@ -65,7 +65,7 @@ export const getUser = async () => apiGet('/api/v1/user/users');
 export const deleteUser = async (userId) => apiDelete(`/api/v1/user/delete/${userId}`);
 
 // Pet APIs
-export const fetchRecentPets = async () => apiGet('/api/v1/pets/availabe/');
+export const getAvailablePets = async () => apiGet('/api/v1/pets/availabe/');
 export const getPet = async (petId) => apiGet(`/api/v1/pets/${petId}`);  // Fetch a specific pet
 export const deletePet = async (petId) => apiDelete(`/api/v1/pets/${petId}`);
 
