@@ -12,10 +12,10 @@ import {
   ListItemText,
   Box,
   Divider,
-  Avatar,
   Badge,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import { isAuthenticated, getUser, clearToken } from '../utils/authHelpers';
 import { getAdoptionRequests } from '../utils/apiHelpers';
 
@@ -140,13 +140,12 @@ const Navbar = () => {
                   }}
                 >
                   <Badge color="error" badgeContent={adoptionRequestsCount}>
-                    Alert
+                    <NotificationsIcon />
                   </Badge>
                 </Button>
               )}
 
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Avatar sx={{ mx: 1 }} />
                 <Typography variant="body1" sx={{ mx: 1 }}>
                   Welcome,{' '}
                   <Typography component="span" sx={{ color: 'blue' }}>
