@@ -9,23 +9,6 @@ const setTokenWithExpiry = (token, expiryDays, user, role) => {
   localStorage.setItem('role', role); // Store the role
 };
 
-const isTokenValid = () => {
-  const expiryDate = localStorage.getItem('expiryDate');
-  if (expiryDate) {
-    const expiryTime = parseInt(expiryDate, 10);
-    if (new Date().getTime() > expiryTime) {
-      clearToken(); // Clear all data if expired
-      return false;
-    }
-  }
-  return true; // If no expiry date or not expired, the token is valid
-};
-
-const isAuthenticated = () => {
-  // Check if the token is valid and not null
-  return isTokenValid() && localStorage.getItem('authToken') !== null;
-};
-
 const clearToken = () => {
   // Remove all relevant items from localStorage
   localStorage.removeItem('authToken');
@@ -34,28 +17,40 @@ const clearToken = () => {
   localStorage.removeItem('role'); // Clear role as well
 };
 
+const isTokenValid = () => {
+  const expiryDate = localStorage.getItem('expiryDate');
+  if (!expiryDate) return false;
+
+  const expiryTime = parseInt(expiryDate, 10);
+  return new Date().getTime() <= expiryTime; // Return true if token is not expired
+};
+
+const isAuthenticated = () => {
+  // Check if the token is valid and not null
+  return isTokenValid() && localStorage.getItem('authToken') !== null;
+};
+
 const getUser = () => {
   const user = localStorage.getItem('user');
-  if (!user) {
-    console.error('No user found in localStorage');
-    return null;
-  }
+  if (!user) return null;
 
   try {
     return JSON.parse(user); // Parse and return user data if available
   } catch (error) {
     console.error('Error parsing user data from localStorage:', error);
-    return null;
+    return null; // Return null if parsing fails
   }
 };
 
 const getRole = () => {
   const role = localStorage.getItem('role');
-  if (!role) {
-    console.error('No role found in localStorage');
-    return null;
-  }
-  return role;
+  return role ? role : 'guest'; // Return 'guest' as default role if not found
 };
 
-export { setTokenWithExpiry, isAuthenticated, clearToken, getUser, getRole };
+// This function checks if the user is logged in and has a role of 'admin'
+const isAdmin = () => {
+  const user = getUser();
+  return isAuthenticated() && user?.role === 'admin';
+};
+
+export { setTokenWithExpiry, isAuthenticated, clearToken, getUser, getRole, isAdmin };
