@@ -1,5 +1,5 @@
 {
-  "proxy": "https://pethub-backend-3te5.onrender.com",
+  "proxy": "http://localhost:5000/",
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
