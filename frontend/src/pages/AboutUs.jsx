@@ -12,6 +12,8 @@ import {
 } from '@mui/material';
 import { Pets, People } from '@mui/icons-material';
 
+import binishaProfile from '../assets/binishaProfile.jpg'
+
 const Section = styled(Box)(({ theme }) => ({
   padding: theme.spacing(4, 0),
   backgroundColor: theme.palette.background.default,
@@ -31,7 +33,7 @@ const AboutUs = () => {
       {/* Hero Section */}
       <Section sx={{ textAlign: 'center', py: 6, backgroundColor: 'primary.main' }}>
         <Container maxWidth="md">
-          <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 2, color:"white"}}>
+          <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 2, color: "white" }}>
             About PetHub
           </Typography>
           <Typography variant="h6" color="white" sx={{ mb: 4 }}>
@@ -48,9 +50,9 @@ const AboutUs = () => {
             Our Mission
           </Typography>
           <Typography variant="body1" color="textSecondary">
-            At PetHub, we are dedicated to helping animals find their forever homes. 
-            We work with shelters and adoption centers to provide a safe, friendly platform 
-            where you can find pets that need a loving family. We believe every pet deserves a 
+            At PetHub, we are dedicated to helping animals find their forever homes.
+            We work with shelters and adoption centers to provide a safe, friendly platform
+            where you can find pets that need a loving family. We believe every pet deserves a
             chance to find a happy home.
           </Typography>
         </Container>
@@ -63,8 +65,8 @@ const AboutUs = () => {
             Our Vision
           </Typography>
           <Typography variant="body1" color="textSecondary">
-            We envision a world where no pet is left without a family. Our vision is to create a 
-            community-driven platform that promotes responsible pet ownership, spreads awareness 
+            We envision a world where no pet is left without a family. Our vision is to create a
+            community-driven platform that promotes responsible pet ownership, spreads awareness
             about animal welfare, and makes the pet adoption process seamless and joyful.
           </Typography>
         </Container>
@@ -100,7 +102,7 @@ const AboutUs = () => {
             <Grid item xs={12} md={5}>
               <TeamMember elevation={3}>
                 <Avatar
-                  src="https://via.placeholder.com/150?text=BS"
+                  src={binishaProfile}//"https://via.placeholder.com/150?text=BS"
                   alt="Binisha Shahi"
                   sx={{ width: 80, height: 80, mr: 3 }}
                 />
@@ -125,7 +127,7 @@ const AboutUs = () => {
             Join Us in Making a Difference
           </Typography>
           <Typography variant="body1" color="textSecondary" sx={{ mb: 4 }}>
-            Whether you’re looking to adopt a pet, volunteer, or donate, there are many ways to help our cause. 
+            Whether you’re looking to adopt a pet, volunteer, or donate, there are many ways to help our cause.
             Together, we can create a better world for animals.
           </Typography>
 
@@ -137,9 +139,9 @@ const AboutUs = () => {
             size="large"
             startIcon={<People />}
             target="_blank" // Open in a new tab
-            >
-          Get Involved
-        </Button>
+          >
+            Get Involved
+          </Button>
         </Container>
       </Section>
     </Box>
