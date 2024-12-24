@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import {
   Box,
   Paper,
@@ -8,13 +7,18 @@ import {
   styled,
   TextField,
   IconButton,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
   AppBar,
   Toolbar,
   Skeleton,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Masonry from '@mui/lab/Masonry';
-import { useParams, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { getAvailablePets } from '../../../utils/apiHelpers';
 
 const PetCard = styled(Paper)(({ theme }) => ({
   display: 'flex',
@@ -34,57 +38,51 @@ const Allpets = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const { type } = useParams();
+  const [filters, setFilters] = useState({
+    species: '',
+    breed: '',
+    status: '',
+    age: '',
+  });
 
   useEffect(() => {
     const fetchPets = async () => {
       try {
-        const token = localStorage.getItem('authToken');
-        axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
-        const response = await axios.get(`/api/v1/pets/availabe/?type=${type || ''}`, {
-          headers: {
-             Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.status === 200) {
-          setPets(response.data);
-        } else {
-          setError(`Error fetching pets: ${response.statusText}`);
-        }
+        const data = await getAvailablePets();
+        setPets(data);
       } catch (err) {
-        if (err.response) {
-          setError(`Server Error: ${err.response.status} - ${err.response.data.message || 'Something went wrong'}`);
-        } else if (err.request) {
-          setError('Network Error: No response received from the server');
-        } else {
-          // Something happened in setting up the request
-          setError(`Error: ${err.message}`);
-        }
+        setError(err.message);
       } finally {
         setLoading(false);
       }
     };
 
     fetchPets();
-  }, [type]);
+  }, []);
 
-  const filteredPets = pets.filter((pet) =>
-    pet.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Filtered pets based on search and filters
+  const filteredPets = pets.filter((pet) => {
+    const matchesSearch = pet.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSpecies = filters.species ? pet.species === filters.species : true;
+    const matchesBreed = filters.breed ? pet.breed === filters.breed : true;
+    const matchesStatus = filters.status ? pet.status === filters.status : true;
+    const matchesAge = filters.age ? pet.age === filters.age : true;
+
+    return matchesSearch && matchesSpecies && matchesBreed && matchesStatus && matchesAge;
+  });
+
+  const handleFilterChange = (event) => {
+    const { name, value } = event.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const clearFilters = () => {
+    setFilters({ species: '', breed: '', status: '', age: '' });
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4">
-      <AppBar
-        position="sticky"
-        sx={{
-          top: 0,
-          mb: 4,
-          transition: 'all 0.3s ease-in-out',
-          zIndex: 1201,
-          backgroundColor: '#1976d2',
-        }}
-      >
+      <AppBar position="sticky" sx={{ top: 0, mb: 4, backgroundColor: '#1976d2' }}>
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1, textAlign: 'start' }}>
             Available Pets
@@ -95,7 +93,6 @@ const Allpets = () => {
               alignItems: 'center',
               backgroundColor: '#f0f0f0',
               borderRadius: 1,
-              transition: 'all 0.3s ease',
             }}
           >
             <TextField
@@ -125,9 +122,95 @@ const Allpets = () => {
         </Toolbar>
       </AppBar>
 
+      <Box sx={{ display: 'flex', gap: 2, mb: 4, flexWrap: 'wrap', justifyContent: 'center' }}>
+        {/* Filter by Species */}
+        <FormControl sx={{ minWidth: 120 }}>
+          <InputLabel>Species</InputLabel>
+          <Select
+            name="species"
+            value={filters.species}
+            onChange={handleFilterChange}
+            displayEmpty
+          >
+            <MenuItem value="">
+              <em>All</em>
+            </MenuItem>
+            {[...new Set(pets.map((pet) => pet.species))].map((species) => (
+              <MenuItem key={species} value={species}>
+                {species}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/* Filter by Breed */}
+        <FormControl sx={{ minWidth: 120 }}>
+          <InputLabel>Breed</InputLabel>
+          <Select
+            name=""
+            value={filters.breed}
+            onChange={handleFilterChange}
+            displayEmpty
+          >
+            <MenuItem value="">
+              <em>All</em>
+            </MenuItem>
+            {[...new Set(pets.map((pet) => pet.breed))].map((breed) => (
+              <MenuItem key={breed} value={breed}>
+                {breed}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/* Filter by Status */}
+        <FormControl sx={{ minWidth: 120 }}>
+          <InputLabel>Status</InputLabel>
+          <Select
+            name="status"
+            value={filters.status}
+            onChange={handleFilterChange}
+            displayEmpty
+          >
+            <MenuItem value="">
+              <em>All</em>
+            </MenuItem>
+            {[...new Set(pets.map((pet) => pet.status))].map((status) => (
+              <MenuItem key={status} value={status}>
+                {status}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/* Filter by Age */}
+        <FormControl sx={{ minWidth: 120 }}>
+          <InputLabel>Age</InputLabel>
+          <Select
+            name="age"
+            value={filters.age}
+            onChange={handleFilterChange}
+            displayEmpty
+          >
+            <MenuItem value="">
+              <em>All</em>
+            </MenuItem>
+            {[...new Set(pets.map((pet) => pet.age))].map((age) => (
+              <MenuItem key={age} value={age}>
+                {age}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/* Clear Filters Button */}
+        <Button variant="outlined" onClick={clearFilters}>
+          Clear All Filters
+        </Button>
+      </Box>
+
       <Box sx={{ width: '100%', minHeight: 800 }}>
         {loading ? (
-          // Show Skeleton loaders instead of circular progress
           <Masonry columns={{ xs: 1, sm: 2, md: 3, lg: 4 }} spacing={2}>
             {[...Array(8)].map((_, index) => (
               <PetCard key={index} sx={{ p: 2 }}>
@@ -135,8 +218,6 @@ const Allpets = () => {
                 <Skeleton width="60%" sx={{ mt: 2 }} />
                 <Skeleton width="80%" sx={{ mt: 1 }} />
                 <Skeleton width="50%" sx={{ mt: 1 }} />
-                <Skeleton width="90%" sx={{ mt: 1 }} />
-                <Skeleton width="40%" sx={{ mt: 2 }} />
               </PetCard>
             ))}
           </Masonry>
@@ -152,10 +233,7 @@ const Allpets = () => {
                   <PetCard key={pet._id} sx={{ p: 2 }}>
                     <Link to={`/${pet.species.toLowerCase()}/${pet._id}`} style={{ textDecoration: 'none' }}>
                       <img
-                        src={
-                          pet.image ||
-                          'https://plus.unsplash.com/premium_photo-1675437553489-0ddf979f299a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                        }
+                        src={pet.image || 'https://via.placeholder.com/150'}
                         alt={pet.name}
                         loading="lazy"
                         style={{
@@ -174,11 +252,11 @@ const Allpets = () => {
                       <br />
                       <strong>Breed:</strong> {pet.breed}
                       <br />
+
                       <strong>Age:</strong> {pet.age}
                       <br />
                       <strong>Description:</strong> {pet.description}
                       <br />
-                      <strong>Donor:</strong> {pet.donor ? pet.donor.name : 'Unknown'}
                     </Typography>
                     <Link to={`/${pet.species.toLowerCase()}/${pet._id}`} style={{ textDecoration: 'none' }}>
                       <Button variant="contained" color="primary" fullWidth sx={{ mt: 1 }}>
@@ -190,7 +268,7 @@ const Allpets = () => {
               </Masonry>
             ) : (
               <Typography variant="body1" sx={{ color: 'red', textAlign: 'center', mt: 10 }}>
-                No {type ? `${type}s` : 'pets'} available for adoption now.
+                No pets available for adoption now.
               </Typography>
             )}
           </>
@@ -201,4 +279,3 @@ const Allpets = () => {
 };
 
 export default Allpets;
-
