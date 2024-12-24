@@ -29,7 +29,27 @@ const UnauthorizedPage = () => {
         bgcolor: '#e3f2fd',
       }}
     >
-      <Box sx={{ mb: 4 }}>
+      <Box sx={{ mb: 4, width: '100%' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mb: 4 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            onClick={handleSignupRedirect}
+            sx={{ paddingX: 4 }}
+          >
+            Get Started
+          </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            size="large"
+            onClick={handleLoginRedirect}
+            sx={{ paddingX: 4 }}
+          >
+            Login
+          </Button>
+        </Box>
         <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 2 }}>
           Welcome to PetHub
         </Typography>
@@ -39,7 +59,7 @@ const UnauthorizedPage = () => {
         </Typography>
       </Box>
 
-      <Box sx={{ mb: 4 }}>
+      <Box sx={{ mb: 4, width: '100%' }}>
         <Typography variant="h6" sx={{ color: 'primary.main', mb: 2 }}>
           Why Choose PetHub?
         </Typography>
@@ -48,27 +68,6 @@ const UnauthorizedPage = () => {
           - Supportive community with guidance for new pet owners<br />
           - Resources for pet care, training, and more
         </Typography>
-      </Box>
-
-      <Box sx={{ display: 'flex', gap: 2 }}>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          onClick={handleSignupRedirect}
-          sx={{ paddingX: 4 }}
-        >
-          Get Started
-        </Button>
-        <Button
-          variant="outlined"
-          color="primary"
-          size="large"
-          onClick={handleLoginRedirect}
-          sx={{ paddingX: 4 }}
-        >
-          Login
-        </Button>
       </Box>
     </Container>
   );
