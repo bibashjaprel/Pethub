@@ -2,28 +2,25 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure that the 'uploads/pets' directory exists
+// Create upload directory if it doesn't exist
 const uploadDir = path.join(__dirname, 'uploads', 'pets');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Set up storage for multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadDir); // Save the file in 'uploads/pets' directory
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Create a unique filename
+    cb(null, Date.now() + path.extname(file.originalname));
   },
 });
 
-// Multer configuration
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // Optional: file size limit (5MB)
+  limits: { fileSize: 5 * 1024 * 1024 }, // file size limit (5MB)
   fileFilter: (req, file, cb) => {
-    // Optional: restrict file types
     const filetypes = /jpeg|jpg|png|gif/;
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = filetypes.test(file.mimetype);
@@ -31,7 +28,7 @@ const upload = multer({
     if (extname && mimetype) {
       return cb(null, true);
     } else {
-      return cb(new Error('Only image files are allowed'), false);
+      return cb(new Error('Only image files are allowed (jpeg, jpg, png, gif)'), false);
     }
   },
 });
