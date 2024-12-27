@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Pet = require('../models/pet.models.js');
-const cloudinary = require('../config/cloudinary.js');
 
 // Get all approved pets
 const getPets = async (req, res) => {
@@ -78,33 +77,33 @@ const getPet = async (req, res) => {
 };
 
 // Create pet with image upload
-const createPet = async (req, res) => {
-  const { name, species, breed, age, description } = req.body;
-  let emptyFields = [];
+// const createPet = async (req, res) => {
+//   const { name, species, breed, age, description } = req.body;
+//   let emptyFields = [];
 
-  if (!name) emptyFields.push('name');
-  if (!species) emptyFields.push('species');
-  if (!breed) emptyFields.push('breed');
-  if (!age) emptyFields.push('age');
-  if (!description) emptyFields.push('description');
+//   if (!name) emptyFields.push('name');
+//   if (!species) emptyFields.push('species');
+//   if (!breed) emptyFields.push('breed');
+//   if (!age) emptyFields.push('age');
+//   if (!description) emptyFields.push('description');
 
-  if (emptyFields.length > 0) {
-    return res.status(400).json({ error: 'Please fill all fields', emptyFields });
-  }
+//   if (emptyFields.length > 0) {
+//     return res.status(400).json({ error: 'Please fill all fields', emptyFields });
+//   }
 
-  try {
-    let imageUrl = '';
-    if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path, { folder: 'pets' });
-      imageUrl = result.secure_url;
-    }
+//   try {
+//     let imageUrl = '';
+//     if (req.file) {
+//       const result = await cloudinary.uploader.upload(req.file.path, { folder: 'pets' });
+//       imageUrl = result.secure_url;
+//     }
 
-    const pet = await Pet.create({ name, species, breed, age, description, image: imageUrl });
-    res.status(201).json(pet);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
+//     const pet = await Pet.create({ name, species, breed, age, description, image: imageUrl });
+//     res.status(201).json(pet);
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// };
 
 // Delete pet
 const deletePet = async (req, res) => {
@@ -160,7 +159,7 @@ const updatePet = async (req, res) => {
 module.exports = {
   getPets,
   getPet,
-  createPet,
+  // createPet,
   deletePet,
   updatePet,
   getPendingPets,
