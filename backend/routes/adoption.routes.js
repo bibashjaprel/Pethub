@@ -8,7 +8,7 @@ const {
   deleteAdoptionRequest,
   updateAdoptionRequest,
   getMyAdoptionRequest
-} = require('../controllers/petAdoption.cotrollers');
+} = require('../controllers/adoption.cotrollers');
 
 const authMiddleware = require('../middlewares/authMiddleware');
 
