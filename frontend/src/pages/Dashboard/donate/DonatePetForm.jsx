@@ -60,19 +60,14 @@ const DonatePet = () => {
 
     try {
       const token = localStorage.getItem('authToken');
-      axios.defaults.baseURL = 'https://pethub-backend-3te5.onrender.com';
       const response = await axios.post('/api/v1/donate', formData, {
         headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
       });
 
-      // Display success message
       setSnackbarMessage('Pet donated successfully!');
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
 
-      console.log(response.data);
-
-      // Clear form after successful submission
       setPetData({
         name: '',
         breed: '',
@@ -81,9 +76,8 @@ const DonatePet = () => {
         species: '',
         image: null,
       });
-      setImagePreview(null); // Clear image preview
+      setImagePreview(null);
     } catch (error) {
-      // Display error message
       setSnackbarMessage('Failed to donate pet. Please try again later.');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
@@ -94,14 +88,12 @@ const DonatePet = () => {
     }
   };
 
-  // Close Snackbar
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'center', alignItems: 'center', padding: 4 }}>
-      {/* Left side with image and text */}
       <Box sx={{ flex: 1, textAlign: 'center', padding: 3, backgroundColor: '#fff', borderRadius: '10px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
         <Box component="img" src={donateImage} alt="Thank you for donating" sx={{ width: '60%', borderRadius: '10px', objectFit: 'cover', transition: 'transform 0.3s ease', '&:hover': { transform: 'translateY(-10px)' } }} />
         <Typography variant="h4" sx={{ mt: 2 }}>Thank You for Donating</Typography>
@@ -111,7 +103,6 @@ const DonatePet = () => {
         </Typography>
       </Box>
 
-      {/* Right side with form */}
       <Box component="form" onSubmit={handleSubmit} sx={{ flex: 1, maxWidth: '600px', padding: 3, backgroundColor: '#fff', borderRadius: '10px' }}>
         <Typography variant="h4" sx={{ mb: 3, textAlign: 'center' }}>Donate a Pet</Typography>
 
@@ -200,7 +191,6 @@ const DonatePet = () => {
         </Grid>
       </Box>
 
-      {/* Snackbar for success or error messages */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
