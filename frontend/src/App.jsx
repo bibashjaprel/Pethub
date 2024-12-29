@@ -32,8 +32,8 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/all-pets" element={isLoggedIn ? <AllPets /> : <Navigate to="/unauthorized" />} />
         <Route path="/:species/:id" element={<AdoptPage />} />
-        <Route path="/donatepet" element={isLoggedIn ? <DonatePet /> : <Navigate to="/unauthorized" />} />
-        <Route path="/contact" element={<AboutUs />} />
+        <Route path="/donate-pet" element={isLoggedIn ? <DonatePet /> : <Navigate to="/unauthorized" />} />
+        <Route path="/about-us" element={<AboutUs />} />
         <Route path="/login" element={!isLoggedIn ? <Login /> : <Navigate to="/" />} />
         <Route path="/signup" element={!isLoggedIn ? <Signup /> : <Navigate to="/" />} />
 
