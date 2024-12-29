@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Grid, Typography, Link, Box, IconButton } from '@mui/material';
+import { Container, Grid, Typography, Link, Box, IconButton, Divider } from '@mui/material';
 import { Facebook, Twitter, Instagram, LinkedIn } from '@mui/icons-material';
 
 const Footer = () => {
@@ -13,7 +13,7 @@ const Footer = () => {
               About PetHub
             </Typography>
             <Typography variant="body2">
-              PetHub is dedicated to connecting pet lovers with the pets they want to adopt. We strive to provide the best experience for both adopters and pet owners.
+              PetHub connects passionate pet lovers with pets in need of a loving home. Our mission is to provide a smooth, hassle-free adoption experience.
             </Typography>
           </Grid>
 
@@ -22,10 +22,10 @@ const Footer = () => {
             <Typography variant="h6" gutterBottom>
               Quick Links
             </Typography>
-            <Link href="/" color="inherit" underline="hover" display="block">
+            <Link href="/" color="inherit" underline="hover" display="block" sx={{ mb: 1 }}>
               Home
             </Link>
-            <Link href="/contact" color="inherit" underline="hover" display="block">
+            <Link href="/about-us" color="inherit" underline="hover" display="block" sx={{ mb: 1 }}>
               About Us
             </Link>
           </Grid>
@@ -36,22 +36,26 @@ const Footer = () => {
               Follow Us
             </Typography>
             <Box display="flex" gap={2}>
-              <IconButton color="inherit" href="https://facebook.com" target="_blank">
+              <IconButton color="inherit" href="https://facebook.com" target="_blank" aria-label="Facebook">
                 <Facebook />
               </IconButton>
-              <IconButton color="inherit" href="https://twitter.com" target="_blank">
+              <IconButton color="inherit" href="https://twitter.com" target="_blank" aria-label="Twitter">
                 <Twitter />
               </IconButton>
-              <IconButton color="inherit" href="https://instagram.com" target="_blank">
+              <IconButton color="inherit" href="https://instagram.com" target="_blank" aria-label="Instagram">
                 <Instagram />
               </IconButton>
-              <IconButton color="inherit" href="https://linkedin.com" target="_blank">
+              <IconButton color="inherit" href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
                 <LinkedIn />
               </IconButton>
             </Box>
           </Grid>
         </Grid>
-        <Box mt={4} textAlign="center">
+
+        <Divider sx={{ my: 4 }} />
+
+        {/* Copyright Section */}
+        <Box textAlign="center">
           <Typography variant="body2">
             &copy; {new Date().getFullYear()} PetHub. All rights reserved.
           </Typography>
