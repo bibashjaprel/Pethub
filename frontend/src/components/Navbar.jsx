@@ -13,9 +13,11 @@ import {
   Box,
   Divider,
   Badge,
+  Avatar,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import VerifiedIcon from '@mui/icons-material/Verified';
 import { isAuthenticated, getUser, clearToken } from '../utils/authHelpers';
 import { getAdoptionRequests } from '../utils/apiHelpers';
 
@@ -45,9 +47,9 @@ const Navbar = () => {
     if (isLoggedIn) {
       const newMenuItems = [
         { text: 'Home', path: '/' },
-        { text: 'Adopt', path: '/all-pets' },
-        { text: 'Donate', path: '/donatepet' },
-        { text: 'Contact Us', path: '/contact' },
+        { text: 'About Us', path: '/about-us' },
+        { text: 'Adopt Pet', path: '/all-pets' },
+        { text: 'Donate Pet', path: '/donate-pet' },
         { text: 'My Requests', path: '/user/requests/' },
       ];
 
@@ -149,9 +151,11 @@ const Navbar = () => {
                 <Typography variant="body1" sx={{ mx: 1 }}>
                   Welcome,{' '}
                   <Typography component="span" sx={{ color: 'blue' }}>
-                    {user?.firstname || 'User'} {user?.lastname}
+                    {user?.firstname || 'User'} {user?.lastname}{' '}
+                    {user?.role === 'admin' && <VerifiedIcon sx={{ color: 'blue', fontSize: 18 }} />}
                   </Typography>
                 </Typography>
+                {/* <Avatar sx={{ mx: 1 }} src={user?.avatar} alt={user?.firstname} /> */}
               </Box>
 
               <Button
