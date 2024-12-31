@@ -12,7 +12,7 @@ import DonatePet from './pages/Dashboard/donate/DonatePetForm';
 import Footer from './components/Footer';
 import UnauthorizedPage from './components/UnauthorizedPage';
 import Editpage from './pages/Dashboard/pets/EditPet';
-import MyRequest from './pages/MyRequest';
+import UserCart from './components/UserCart';
 import { isAuthenticated, getUser } from './utils/authHelpers';
 
 const App = () => {
@@ -39,8 +39,8 @@ const App = () => {
 
         {/* User Routes - Accessible by logged-in users */}
         <Route
-          path="/user/requests/"
-          element={isLoggedIn ? <MyRequest /> : <Navigate to="/login" />}
+          path="/my-requests"
+          element={isLoggedIn ? <UserCart /> : <Navigate to="/login" />}
         />
 
         {/* Edit Pet - Accessible by admin */}
