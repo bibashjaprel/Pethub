@@ -13,13 +13,13 @@ import {
   Box,
   Divider,
   Badge,
-  Avatar,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import { isAuthenticated, getUser, clearToken } from '../utils/authHelpers';
 import { getAdoptionRequests } from '../utils/apiHelpers';
+import { motion } from 'framer-motion';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -33,7 +33,6 @@ const Navbar = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [adoptionRequestsCount, setAdoptionRequestsCount] = useState(0);
 
-  // Fetch adoption requests count for admin role
   const fetchAdoptionRequests = () => {
     if (role === 'admin') {
       getAdoptionRequests()
@@ -42,29 +41,23 @@ const Navbar = () => {
     }
   };
 
-  // Dynamically set menu items based on authentication and user role
   useEffect(() => {
     if (isLoggedIn) {
       const newMenuItems = [
         { text: 'Home', path: '/' },
         { text: 'About Us', path: '/about-us' },
-        { text: 'Adopt Pet', path: '/all-pets' },
-        { text: 'Donate Pet', path: '/donate-pet' },
-        { text: 'My Requests', path: '/user/requests/' },
+        { text: 'Adopt Pets', path: '/all-pets' },
+        { text: 'Donate Pets', path: '/donate-pet' },
       ];
 
-      if (role === 'admin') {
-        newMenuItems.push({ text: 'Dashboard', path: '/admin/v1/dashboard' });
-        fetchAdoptionRequests(); // Only fetch for admin role
-      }
-
+      if (role === 'admin') fetchAdoptionRequests();
       setMenuItems(newMenuItems);
     } else {
       setMenuItems([
         { text: 'Home', path: '/' },
+        { text: 'About Us', path: '/about-us' },
         { text: 'Adopt Pets', path: '/all-pets' },
-        { text: 'Donate Pets', path: '/donatepet' },
-        { text: 'Contact Us', path: '/contact' },
+        { text: 'Donate Pets', path: '/donate-pet' },
       ]);
     }
   }, [isLoggedIn, role]);
@@ -73,7 +66,34 @@ const Navbar = () => {
     setActiveLink(location.pathname);
   }, [location]);
 
-  const toggleDrawer = (open) => () => setDrawerOpen(open);
+  const toggleDrawer = (open) => () => {
+    setDrawerOpen(open);
+
+    if (open) {
+      const updatedMenuItems = [
+        { text: 'Home', path: '/' },
+        { text: 'About Us', path: '/about-us' },
+        { text: 'Adopt Pets', path: '/all-pets' },
+        { text: 'Donate Pets', path: '/donate-pet' },
+      ];
+
+      if (role === 'admin' || role === 'user') {
+        updatedMenuItems.push({ text: 'My Requests', path: '/user/requests/' });
+      }
+
+      setMenuItems(updatedMenuItems);
+    } else {
+      // Reset to the default menu items when the drawer is closed
+      const defaultMenuItems = [
+        { text: 'Home', path: '/' },
+        { text: 'About Us', path: '/about-us' },
+        { text: 'Adopt Pets', path: '/all-pets' },
+        { text: 'Donate Pets', path: '/donate-pet' },
+      ];
+
+      setMenuItems(defaultMenuItems);
+    }
+  };
 
   const handleLogout = () => {
     clearToken();
@@ -81,91 +101,128 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="static" color="default">
-      <Toolbar sx={{ justifyContent: 'space-between', padding: '0 20px' }}>
-        <Typography variant="h6" sx={{ fontFamily: 'cursive', color: 'blue' }}>
-          PetHub
-        </Typography>
+    <AppBar position="sticky" color="primary" sx={{ boxShadow: 'none' }}>
+      <Toolbar sx={{ justifyContent: 'space-between', px: 3 }}>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              fontFamily: 'Roboto, Arial',
+              fontWeight: 700,
+              letterSpacing: '0.1em',
+              cursor: 'pointer',
+              color: '#fff',
+            }}
+            onClick={() => navigate('/')}
+          >
+            PetHub
+          </Typography>
+        </motion.div>
 
         <Box sx={{ display: { xs: 'none', md: 'flex' }, flexGrow: 1, justifyContent: 'center' }}>
           {menuItems.map((item) => (
-            <Button
+            <motion.div
               key={item.text}
-              component={Link}
-              to={item.path}
-              sx={{
-                mx: 1,
-                color: 'text.primary',
-                position: 'relative',
-                '&:hover': {
-                  backgroundColor: 'lightgray',
-                  borderRadius: 3,
-                },
-                '&:after': {
-                  content: activeLink === item.path ? '""' : 'none',
-                  position: 'absolute',
-                  bottom: -5,
-                  left: 0,
-                  width: '100%',
-                  height: '2px',
-                  backgroundColor: 'blue',
-                },
-              }}
-              onClick={() => setActiveLink(item.path)}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
             >
-              {item.text}
-            </Button>
+              <Button
+                component={Link}
+                to={item.path}
+                sx={{
+                  mx: 1.5,
+                  color: activeLink === item.path ? '#FFD700' : '#fff',
+                  fontWeight: activeLink === item.path ? 'bold' : 'normal',
+                  '&:hover': { backgroundColor: '#1976d2', borderRadius: 2 },
+                }}
+                onClick={() => setActiveLink(item.path)}
+              >
+                {item.text}
+              </Button>
+            </motion.div>
           ))}
         </Box>
 
-        <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {!isLoggedIn ? (
-            <Button
-              component={Link}
-              to="/login"
-              variant="contained"
-              color="primary"
-              sx={{ marginLeft: 2 }}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
             >
-              Login
-            </Button>
+              <Button
+                component={Link}
+                to="/login"
+                variant="contained"
+                color="secondary"
+                sx={{ ml: 2 }}
+              >
+                Login
+              </Button>
+            </motion.div>
           ) : (
             <>
-              {role === 'admin' && adoptionRequestsCount > 0 && (
-                <Button
-                  component={Link}
-                  to="/user/requests/"
-                  sx={{
-                    marginLeft: 2,
-                    backgroundColor: 'white',
-                    '&:hover': { backgroundColor: 'darkred' },
-                  }}
+              {role === 'admin' && adoptionRequestsCount >= 0 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
                 >
-                  <Badge color="error" badgeContent={adoptionRequestsCount}>
-                    <NotificationsIcon />
-                  </Badge>
-                </Button>
+                  <Button
+                    component={Link}
+                    to="/user/requests/"
+                    sx={{ color: '#fff', mx: 1 }}
+                  >
+                    <Badge
+                      color="error"
+                      badgeContent={adoptionRequestsCount}
+                      sx={{ ml: 1 }}
+                    >
+                      <NotificationsIcon />
+                    </Badge>
+                  </Button>
+                </motion.div>
               )}
 
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Typography variant="body1" sx={{ mx: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
+                <Typography
+                  variant="body1"
+                  sx={{ color: '#fff', mr: 1, fontFamily: 'Arial' }}
+                >
                   Welcome,{' '}
-                  <Typography component="span" sx={{ color: 'blue' }}>
-                    {user?.firstname || 'User'} {user?.lastname}{' '}
-                    {user?.role === 'admin' && <VerifiedIcon sx={{ color: 'blue', fontSize: 18 }} />}
+                  <Typography
+                    component="span"
+                    sx={{
+                      color: '#FFD700',
+                      fontWeight: 500,
+                      textTransform: 'capitalize',
+                    }}
+                  >
+                    {user?.firstname || 'User'}{' '}
+                    {role === 'admin' && <VerifiedIcon sx={{ fontSize: 16 }} />}
                   </Typography>
                 </Typography>
-                {/* <Avatar sx={{ mx: 1 }} src={user?.avatar} alt={user?.firstname} /> */}
               </Box>
 
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={handleLogout}
-                sx={{ marginLeft: 2 }}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
               >
-                Logout
-              </Button>
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  onClick={handleLogout}
+                  sx={{ ml: 2, borderColor: '#fff', color: '#fff' }}
+                >
+                  Logout
+                </Button>
+              </motion.div>
             </>
           )}
         </Box>
@@ -173,7 +230,6 @@ const Navbar = () => {
         <IconButton
           edge="start"
           color="inherit"
-          aria-label="menu"
           onClick={toggleDrawer(true)}
           sx={{ display: { xs: 'block', md: 'none' } }}
         >
@@ -187,12 +243,18 @@ const Navbar = () => {
         onClose={toggleDrawer(false)}
         sx={{ width: 250 }}
       >
-        <Box sx={{ padding: '20px', backgroundColor: '#1976d2', color: 'white' }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>PetHub Menu</Typography>
+        <Box sx={{ p: 2, backgroundColor: '#1976d2', color: '#fff' }}>
+          <Typography variant="h6">PetHub Menu</Typography>
         </Box>
-        <List sx={{ width: '250px' }}>
+        <List>
           {menuItems.map((item) => (
-            <ListItem button key={item.text} component={Link} to={item.path} onClick={toggleDrawer(false)}>
+            <ListItem
+              button
+              key={item.text}
+              component={Link}
+              to={item.path}
+              onClick={toggleDrawer(false)}
+            >
               <ListItemText primary={item.text} />
             </ListItem>
           ))}
