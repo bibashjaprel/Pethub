@@ -18,7 +18,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import { isAuthenticated, getUser, clearToken } from '../utils/authHelpers';
-import { getAdoptionRequests } from '../utils/apiHelpers';
+import { getMyAdoptionRequest } from '../utils/apiHelpers';
 import { motion } from 'framer-motion';
 
 const Navbar = () => {
@@ -34,64 +34,35 @@ const Navbar = () => {
   const [adoptionRequestsCount, setAdoptionRequestsCount] = useState(0);
 
   const fetchAdoptionRequests = () => {
-    if (role === 'admin') {
-      getAdoptionRequests()
+    if (role === 'admin' || role === 'user') {
+      getMyAdoptionRequest()
         .then((data) => setAdoptionRequestsCount(data.length))
         .catch((err) => console.error('Failed to fetch adoption requests:', err));
     }
   };
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      const newMenuItems = [
-        { text: 'Home', path: '/' },
-        { text: 'About Us', path: '/about-us' },
-        { text: 'Adopt Pets', path: '/all-pets' },
-        { text: 'Donate Pets', path: '/donate-pet' },
-      ];
-
-      if (role === 'admin') fetchAdoptionRequests();
-      setMenuItems(newMenuItems);
-    } else {
-      setMenuItems([
-        { text: 'Home', path: '/' },
-        { text: 'About Us', path: '/about-us' },
-        { text: 'Adopt Pets', path: '/all-pets' },
-        { text: 'Donate Pets', path: '/donate-pet' },
-      ]);
-    }
-  }, [isLoggedIn, role]);
+  const defaultMenuItems = [
+    { text: 'Home', path: '/' },
+    { text: 'About Us', path: '/about-us' },
+    { text: 'Adopt Pets', path: '/all-pets' },
+    { text: 'Donate Pets', path: '/donate-pet' },
+  ];
 
   useEffect(() => {
     setActiveLink(location.pathname);
-  }, [location]);
-
-  const toggleDrawer = (open) => () => {
-    setDrawerOpen(open);
-
-    if (open) {
-      const updatedMenuItems = [
-        { text: 'Home', path: '/' },
-        { text: 'About Us', path: '/about-us' },
-        { text: 'Adopt Pets', path: '/all-pets' },
-        { text: 'Donate Pets', path: '/donate-pet' },
-      ];
-
+    if (isLoggedIn) {
+      const newMenuItems = [...defaultMenuItems];
       if (role === 'admin' || role === 'user') {
-        updatedMenuItems.push({ text: 'My Requests', path: '/my-requests/#/' });
+        newMenuItems.push({ text: 'My Requests', path: '/my-requests/#/' });
       }
-
-      setMenuItems(updatedMenuItems);
+      setMenuItems(newMenuItems);
+      fetchAdoptionRequests();
     } else {
-      const defaultMenuItems = [
-        { text: 'Home', path: '/' },
-        { text: 'About Us', path: '/about-us' },
-        { text: 'Adopt Pets', path: '/all-pets' },
-        { text: 'Donate Pets', path: '/donate-pet' },
-      ];
       setMenuItems(defaultMenuItems);
     }
-  };
+  }, [isLoggedIn, location, role]);
+
+  const toggleDrawer = (open) => () => setDrawerOpen(open);
 
   const handleLogout = () => {
     clearToken();
@@ -138,17 +109,10 @@ const Navbar = () => {
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          {!isLoggedIn ? (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
-              <Button component={Link} to="/login" variant="contained" color="secondary" sx={{ ml: 2 }}>
-                Login
-              </Button>
-            </motion.div>
-          ) : (
+          {isLoggedIn && (
             <>
               <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-                {/* Only show notifications on desktop */}
-                {role === 'admin' && adoptionRequestsCount >= 0 && (
+                {(role === 'admin' || role === 'user') && adoptionRequestsCount >= 0 && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
                     <Button component={Link} to="/my-requests/#/" sx={{ color: '#fff', mx: 1 }}>
                       <Badge color="error" badgeContent={adoptionRequestsCount} sx={{ ml: 1 }}>
@@ -157,8 +121,6 @@ const Navbar = () => {
                     </Button>
                   </motion.div>
                 )}
-
-                {/* Show welcome message on desktop */}
                 <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
                   <Typography variant="body1" sx={{ color: '#fff', mr: 1, fontFamily: 'Arial' }}>
                     Welcome,{' '}
@@ -168,8 +130,6 @@ const Navbar = () => {
                     </Typography>
                   </Typography>
                 </Box>
-
-                {/* Show logout button on desktop */}
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
                   <Button variant="outlined" color="inherit" onClick={handleLogout} sx={{ ml: 2, borderColor: '#fff', color: '#fff' }}>
                     Logout
@@ -177,6 +137,17 @@ const Navbar = () => {
                 </motion.div>
               </Box>
             </>
+          )}
+
+          {/* Login Button should only be in the Drawer for mobile view */}
+          {isLoggedIn === false && (
+            <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
+                <Button component={Link} to="/login" variant="contained" color="secondary" sx={{ ml: 2 }}>
+                  Login
+                </Button>
+              </motion.div>
+            </Box>
           )}
         </Box>
 
@@ -195,6 +166,11 @@ const Navbar = () => {
               <ListItemText primary={item.text} />
             </ListItem>
           ))}
+          {!isLoggedIn && (
+            <ListItem button component={Link} to="/login" onClick={toggleDrawer(false)}>
+              <ListItemText primary="Login" />
+            </ListItem>
+          )}
           {isLoggedIn && (
             <>
               <Divider />
