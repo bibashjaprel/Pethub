@@ -20,6 +20,7 @@ import Masonry from '@mui/lab/Masonry';
 import { Link } from 'react-router-dom';
 import { getAvailablePets } from '../../../utils/apiHelpers';
 
+// Styled Pet Card Component
 const PetCard = styled(Paper)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -32,6 +33,41 @@ const PetCard = styled(Paper)(({ theme }) => ({
     boxShadow: theme.shadows[5],
   },
 }));
+
+// Filter Component for each select
+const FilterSelect = ({ label, value, onChange, options, name }) => (
+  <FormControl sx={{ minWidth: 120 }}>
+    <InputLabel sx={{ color: '#1976d2' }}>{label}</InputLabel> {/* Adjust color for better visibility */}
+    <Select
+      name={name}
+      value={value}
+      onChange={onChange}
+      displayEmpty
+      sx={{
+        backgroundColor: '#f9f9f9', // Lighter background for better contrast
+        '& .MuiSelect-root': {
+          color: '#333', // Darker text color
+        },
+        '& .MuiOutlinedInput-root': {
+          borderRadius: 5,
+          borderColor: '#1976d2', // Border color to match theme
+        },
+        '& .MuiInputLabel-root': {
+          fontWeight: 'bold', // Make label text bold for clarity
+        },
+      }}
+    >
+      <MenuItem value="">
+        <em>All</em>
+      </MenuItem>
+      {options.map((option) => (
+        <MenuItem key={option} value={option}>
+          {option}
+        </MenuItem>
+      ))}
+    </Select>
+  </FormControl>
+);
 
 const Allpets = () => {
   const [pets, setPets] = useState([]);
@@ -60,15 +96,13 @@ const Allpets = () => {
     fetchPets();
   }, []);
 
-  // Filtered pets based on search and filters
   const filteredPets = pets.filter((pet) => {
     const matchesSearch = pet.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesSpecies = filters.species ? pet.species === filters.species : true;
     const matchesBreed = filters.breed ? pet.breed === filters.breed : true;
-    const matchesStatus = filters.status ? pet.status === filters.status : true;
     const matchesAge = filters.age ? pet.age === filters.age : true;
 
-    return matchesSearch && matchesSpecies && matchesBreed && matchesStatus && matchesAge;
+    return matchesSearch && matchesSpecies && matchesBreed && matchesAge;
   });
 
   const handleFilterChange = (event) => {
@@ -123,88 +157,44 @@ const Allpets = () => {
       </AppBar>
 
       <Box sx={{ display: 'flex', gap: 2, mb: 4, flexWrap: 'wrap', justifyContent: 'center' }}>
-        {/* Filter by Species */}
-        <FormControl sx={{ minWidth: 120 }}>
-          <InputLabel>Species</InputLabel>
-          <Select
-            name="species"
-            value={filters.species}
-            onChange={handleFilterChange}
-            displayEmpty
-          >
-            <MenuItem value="">
-              <em>All</em>
-            </MenuItem>
-            {[...new Set(pets.map((pet) => pet.species))].map((species) => (
-              <MenuItem key={species} value={species}>
-                {species}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <FilterSelect
+          label=""
+          value={filters.species}
+          onChange={handleFilterChange}
+          options={[...new Set(pets.map((pet) => pet.species))]}
+          name="species"
+        />
 
-        {/* Filter by Breed */}
-        <FormControl sx={{ minWidth: 120 }}>
-          <InputLabel>Breed</InputLabel>
-          <Select
-            name=""
-            value={filters.breed}
-            onChange={handleFilterChange}
-            displayEmpty
-          >
-            <MenuItem value="">
-              <em>All</em>
-            </MenuItem>
-            {[...new Set(pets.map((pet) => pet.breed))].map((breed) => (
-              <MenuItem key={breed} value={breed}>
-                {breed}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <FilterSelect
+          label=""
+          value={filters.breed}
+          onChange={handleFilterChange}
+          options={[...new Set(pets.map((pet) => pet.breed))]}
+          name="breed"
+        />
 
-        {/* Filter by Status */}
-        <FormControl sx={{ minWidth: 120 }}>
-          <InputLabel>Status</InputLabel>
-          <Select
-            name="status"
-            value={filters.status}
-            onChange={handleFilterChange}
-            displayEmpty
-          >
-            <MenuItem value="">
-              <em>All</em>
-            </MenuItem>
-            {[...new Set(pets.map((pet) => pet.status))].map((status) => (
-              <MenuItem key={status} value={status}>
-                {status}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <FilterSelect
+          label=""
+          value={filters.age}
+          onChange={handleFilterChange}
+          options={[...new Set(pets.map((pet) => pet.age))]}
+          name="age"
+        />
 
-        {/* Filter by Age */}
-        <FormControl sx={{ minWidth: 120 }}>
-          <InputLabel>Age</InputLabel>
-          <Select
-            name="age"
-            value={filters.age}
-            onChange={handleFilterChange}
-            displayEmpty
-          >
-            <MenuItem value="">
-              <em>All</em>
-            </MenuItem>
-            {[...new Set(pets.map((pet) => pet.age))].map((age) => (
-              <MenuItem key={age} value={age}>
-                {age}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        {/* Clear Filters Button */}
-        <Button variant="outlined" onClick={clearFilters}>
+        <Button
+          variant="outlined"
+          onClick={clearFilters}
+          sx={{
+            padding: '10px 20px',
+            backgroundColor: '#fff',
+            color: '#1976d2',
+            borderColor: '#1976d2',
+            '&:hover': {
+              backgroundColor: '#1976d2',
+              color: '#fff',
+            },
+          }}
+        >
           Clear All Filters
         </Button>
       </Box>
